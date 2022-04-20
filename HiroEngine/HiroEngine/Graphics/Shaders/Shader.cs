@@ -12,18 +12,19 @@ namespace HiroEngine.HiroEngine.Graphics.Shaders
 
         public static Shader LoadShader(string path, ShaderType type)
         {
-            if (string.IsNullOrEmpty(path))
+            string combinedPath = Path.Combine(Environment.CurrentDirectory, path);
+            if (string.IsNullOrEmpty(combinedPath))
             {
                 throw new Exception("Shader path cannot be empty!");
             }
 
-            if(!File.Exists(path))
+            if(!File.Exists(combinedPath))
             {
-                throw new Exception($"Path for shader: [{path}] does not exist");
+                throw new Exception($"Path for shader: [{combinedPath}] does not exist");
             }
 
             int shaderId = GL.CreateShader(type);
-            GL.ShaderSource(shaderId, File.ReadAllText(path));
+            GL.ShaderSource(shaderId, File.ReadAllText(combinedPath));
             GL.CompileShader(shaderId);
             
             string infoLog = GL.GetShaderInfoLog(shaderId);

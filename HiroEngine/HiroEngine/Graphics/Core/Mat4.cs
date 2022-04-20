@@ -103,5 +103,10 @@ namespace HiroEngine.HiroEngine.Graphics.Core
         {
             return String.Join(", ", values);
         }
+
+        public override string ToString()
+        {
+            return String.Join("; ", values);
+        }
     }
 }
