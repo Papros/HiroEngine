@@ -21,7 +21,6 @@ in DATA
 
 void main() {
 	float intensity = light_power / length(fs_in.position.xy - light_position);
-	//intensity = ( intensity < light_limit ? intensity : light_limit );
-	intensity = 1.0f;
-	color =  texture(texture1, fs_in.textCoord);// * vec4( fs_in.color * light_power * intensity, 1.0f);
+	intensity = 1.0f;//( intensity < light_limit ? intensity : light_limit );
+	color =  texture(texture1, fs_in.textCoord) * vec4( fs_in.color * light_power * intensity, 1.0f);
 }

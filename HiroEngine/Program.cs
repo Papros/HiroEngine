@@ -1,7 +1,5 @@
-﻿using HiroEngine.HiroEngine.Graphics.Core;
-using System;
-using System.Diagnostics;
-using HiroEngine.HiroEngine.Graphics.Window;
+﻿using HiroEngine.HiroEngine.Graphics.Window;
+using HiroEngine.HiroEngine.Inputs.handlers;
 
 namespace HiroEngine
 {
@@ -9,7 +7,10 @@ namespace HiroEngine
     {
         static void Main(string[] args)
         {
-            Window game = new Window(1280, 720, "Test");
+            AppWindow game = new AppWindow(AppWindow.GetGameWindowSettings(), AppWindow.GetWindowSettings(1280, 720, "Test2"));
+            game.Input.MouseHandler = new BasicMouseHandler(game.Camera);
+            game.Input.KeyboardHandler = new BasicKeyboardHandler(game.Camera);
+            game.Input.GetSubscribtionFromHandler();
             game.Run();
         }
     }

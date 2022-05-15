@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 
@@ -10,8 +8,6 @@ namespace HiroEngine.HiroEngine.Graphics.Shaders
     public struct ShaderProgram
     {
         public int ID;
-        public Shader VertexShader { get; private set; }
-        public Shader FragmentShader { get; private set; }
 
         private Dictionary<string, int> _uniformLocations;
 
@@ -27,6 +23,13 @@ namespace HiroEngine.HiroEngine.Graphics.Shaders
 
         public struct Uniforms
         {
+            public struct CORE
+            {
+                public static int VERTEX_COORDS = 0; //"vertex_coords";
+                public static int TEXTURE_COORDS = 2;//"texture_coords";
+                public static int VERTEX_COLOR = 1; //"vertex_color";
+            }
+
             public struct TEXTURES
             {
                 public static string TEXTURE_1 = "texture1";
@@ -49,35 +52,59 @@ namespace HiroEngine.HiroEngine.Graphics.Shaders
             }
         }
 
+        public ShaderProgram(string vertexShaderPath, string fragmentShaderPath)
+        {
+            ID = GL.CreateProgram();
+
+            var _vertexShader = Shader.LoadShader(vertexShaderPath, ShaderType.VertexShader);
+            var _fragmentShader = Shader.LoadShader(fragmentShaderPath, ShaderType.FragmentShader);
+
+            GL.AttachShader(ID, _vertexShader.ID);
+            GL.AttachShader(ID, _fragmentShader.ID);
+
+            GL.LinkProgram(ID);
+
+            GL.DetachShader(ID, _vertexShader.ID);
+            GL.DetachShader(ID, _fragmentShader.ID);
+
+            GL.DeleteShader(_vertexShader.ID);
+            GL.DeleteShader(_fragmentShader.ID);
+
+            string infoLog = GL.GetProgramInfoLog(ID);
+
+            _uniformLocations = new Dictionary<string, int>();
+            loadUniformsNames();
+
+            if (!string.IsNullOrEmpty(infoLog))
+            {
+                throw new Exception(infoLog);
+            }
+        }
+
         public ShaderProgram LoadShaderProgram( string vertexShaderPath, string fragmentShaderPath )
         {
             ID = GL.CreateProgram();
 
-            VertexShader = Shader.LoadShader(vertexShaderPath, ShaderType.VertexShader);
-            FragmentShader = Shader.LoadShader(fragmentShaderPath, ShaderType.FragmentShader);
+            var _vertexShader = Shader.LoadShader(vertexShaderPath, ShaderType.VertexShader);
+            var _fragmentShader = Shader.LoadShader(fragmentShaderPath, ShaderType.FragmentShader);
 
-            GL.AttachShader(ID, VertexShader.ID);
-            GL.AttachShader(ID, FragmentShader.ID);
+            GL.AttachShader(ID, _vertexShader.ID);
+            GL.AttachShader(ID, _fragmentShader.ID);
 
             GL.LinkProgram(ID);
 
-            GL.DetachShader(ID, VertexShader.ID);
-            GL.DetachShader(ID, FragmentShader.ID);
+            GL.DetachShader(ID, _vertexShader.ID);
+            GL.DetachShader(ID, _fragmentShader.ID);
 
-            GL.DeleteShader(VertexShader.ID);
-            GL.DeleteShader(FragmentShader.ID);
+            GL.DeleteShader(_vertexShader.ID);
+            GL.DeleteShader(_fragmentShader.ID);
 
             string infoLog = GL.GetProgramInfoLog(ID);
 
-            GL.GetProgram(ID, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
+           
 
             _uniformLocations = new Dictionary<string, int>();
-            for (var i = 0; i < numberOfUniforms; i++)
-            {
-                var key = GL.GetActiveUniform(ID, i, out _, out _);
-                var location = GL.GetUniformLocation(ID, key);
-                _uniformLocations.Add(key, location);
-            }
+            loadUniformsNames();
 
             if (!string.IsNullOrEmpty(infoLog))
             {
@@ -85,6 +112,17 @@ namespace HiroEngine.HiroEngine.Graphics.Shaders
             }
 
             return this;
+        }
+
+        private void loadUniformsNames()
+        {
+            GL.GetProgram(ID, GetProgramParameterName.ActiveUniforms, out var numberOfUniforms);
+            for (var i = 0; i < numberOfUniforms; i++)
+            {
+                var key = GL.GetActiveUniform(ID, i, out _, out _);
+                var location = GL.GetUniformLocation(ID, key);
+                _uniformLocations.Add(key, location);
+            }
         }
 
         public void Use()
@@ -98,10 +136,10 @@ namespace HiroEngine.HiroEngine.Graphics.Shaders
             GL.Uniform1(GetUniformLocation(name), value);
         }
 
-        public void SetMatrix4(string name, Matrix4 data, bool transpose = false)
+        public void SetMatrix4(string name, Matrix4 data)
         {
             GL.UseProgram(ID);
-            GL.UniformMatrix4(GetUniformLocation(name), 1, transpose, ref data.Row0.X);
+            GL.UniformMatrix4(_uniformLocations[name], true, ref data);
         }
 
         public void SetVector2(string name, Vector2 data)
@@ -116,7 +154,7 @@ namespace HiroEngine.HiroEngine.Graphics.Shaders
             GL.Uniform3(GetUniformLocation(name), ref data);
         }
 
-        private int GetUniformLocation(string name)
+        public int GetUniformLocation(string name)
         {
             if(!_uniformLocations.ContainsKey(name))
             {

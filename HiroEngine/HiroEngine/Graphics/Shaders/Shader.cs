@@ -1,8 +1,6 @@
 ﻿using OpenTK.Graphics.OpenGL4;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace HiroEngine.HiroEngine.Graphics.Shaders
 {

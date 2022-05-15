@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -9,7 +8,7 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
 {
     public class Texture
     {
-        int Handle;
+        public int Handle { get; private set; }
 
         public Texture(int glHandle)
         {
@@ -22,6 +21,8 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
 
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, Handle);
+
+            if (path == null) return;
 
             string combinedPath = Path.Combine(Environment.CurrentDirectory, @"Sample/assets", path);
 
