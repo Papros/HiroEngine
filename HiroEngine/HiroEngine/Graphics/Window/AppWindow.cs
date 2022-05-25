@@ -46,7 +46,7 @@ namespace HiroEngine.HiroEngine.Graphics.Window
             : base(gameWindowSettings, nativeWindowSettings)
         {
             Input = new InputManager();
-            Camera = new Camera(Vector3.UnitZ * 3, (float)Size.X / (float)Size.Y );
+            Camera = new Camera(new Vector3(0,10,5), (float)Size.X / (float)Size.Y );
             AppSettings = AppWindowSettings.GetDefaultSettings();
             ReloadSettings();
             _scene = new List<Model>();
@@ -55,7 +55,7 @@ namespace HiroEngine.HiroEngine.Graphics.Window
 
         public void ReloadSettings()
         {
-            CursorVisible = AppSettings.CursorVisible;
+            CursorVisible = true;// AppSettings.CursorVisible;
         }
 
         protected override void OnLoad()
@@ -67,22 +67,35 @@ namespace HiroEngine.HiroEngine.Graphics.Window
 
             _shaderProgram.Use();
 
-            CursorGrabbed = true;
-
-            
-            _scene.Add(new Model("wooden_tower/tower2.dae"));
-            _scene[0].AddPosition(new Vector3(0, 0, 0));
-            _scene[0].AddRotation(-1.5708f, 0, 0);
+            CursorGrabbed = false;// true;
             Texture towerText = new Texture("wooden_tower/textures/Wood_Tower_Col.jpg");
-            _scene[0].Components[0].AddTexture(new Texture[]{ towerText });
-            
 
+            Model tower = new Model("wooden_tower/tower2.dae");
+            tower.Components[0].AddTexture(new Texture[] { towerText });
+            tower.AddPosition(new Vector3(0, 0, 0));
+            tower.AddRotation(-1.5708f, 0, 0);
+
+            Model tower2 = new Model("wooden_tower/tower2.dae");
+            tower2.Components[0].AddTexture(new Texture[] { towerText });
+            tower2.AddPosition(new Vector3(-10, 0, 0));
+            tower2.AddRotation(-1.5708f, 0, 0);
+
+            Model tower3 = new Model("wooden_tower/tower2.dae");
+            tower3.Components[0].AddTexture(new Texture[] { towerText });
+            tower3.AddPosition(new Vector3(10, 0, 0));
+            tower3.AddRotation(-1.5708f, 0, 0);
+
+            _scene.Add(tower);
+            _scene.Add(tower2);
+            _scene.Add(tower3);
+            
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f); // Setting "default" background color
             GL.Enable(EnableCap.DepthTest); // Enabling depth test, 
+            // GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line); To draw only edges
 
 
-            Shape floor = Shape.Plane(new Vector3(-5, 0, -5), new Vector2(10, 10));
-            floor.AddTexture(new Texture[] { new Texture("textures/grass.jpg") });
+            Shape floor = Shape.Plane(new Vector3(-15, 0, -5), new Vector2(30, 10));
+            floor.AddTexture(new Texture[] { new Texture("container.png") });
             _scene.Add(new Model(floor));
 
             //_scene.Add(new Model(Mesh.TestData()));
