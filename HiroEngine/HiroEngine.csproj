@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="HiroEngine\Audio\" />
     <Folder Include="HiroEngine\Data\Structures\" />
-    <Folder Include="HiroEngine\GUI\" />
     <Folder Include="HiroEngine\Engine\" />
   </ItemGroup>
 
@@ -42,10 +41,28 @@
     <None Update="HiroEngine\Graphics\Shaders\Fragments\basic.frag.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="HiroEngine\Graphics\Shaders\Fragments\basic.frag.ui.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="HiroEngine\Graphics\Shaders\Vertex\basic.vert.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="HiroEngine\Graphics\Shaders\Vertex\basic.vert.ui.glsl">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Sample\assets\container.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Sample\assets\station\SpaceStationScene.dae">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Sample\assets\textures\grass.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Sample\assets\UI\bar.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Sample\assets\UI\minimap.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Sample\assets\wooden_tower\textures\Wood_Tower_Col.jpg">

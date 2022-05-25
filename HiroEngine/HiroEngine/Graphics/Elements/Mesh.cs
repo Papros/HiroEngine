@@ -8,7 +8,7 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
 {
     public class Mesh
     {
-        private Vertex[] _vertices;
+        private float[] _vertices;
         private int[] _indices;
         private Texture[] _textures;
 
@@ -16,24 +16,27 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
 
         public int Size {  get { return _indices.Length;  } }
 
-        public Mesh(Vertex[] vertices, int[] indices, Texture[] textures)
+        public Mesh(float[] vertices, int[] indices, Texture[] textures)
         {
             _vertices = vertices;
             _indices = indices;
-            _textures = textures;
+            _textures = textures != null ? textures : new Texture[] { };
 
             Setup();
         }
 
-        public void Draw(int ID)
+        public void Draw(ShaderProgram shader)
         {
-            for(int i = 0; i < _textures.Length; i++)
+            shader.Use();
+            GL.BindVertexArray(VAO);
+
+            for (int i = 0; i < _textures.Length; i++)
             {
-                GL.BindTextureUnit(i, _textures[i].Handle);
+                _textures[i].UseUnit(i);
             }
 
-            GL.BindVertexArray(VAO);
             GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
+
             GL.BindVertexArray(0);
 
             GL.ActiveTexture(TextureUnit.Texture0);
@@ -48,10 +51,10 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
             GL.BindVertexArray(VAO);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Length * sizeof(float) * 8, _vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Length * sizeof(float), _vertices, BufferUsageHint.StaticDraw);
 
-            GL.BindBuffer(BufferTarget.ArrayBuffer, EBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, _indices.Length * sizeof(uint), _indices, BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, BufferUsageHint.StaticDraw);
 
             GL.EnableVertexAttribArray(ShaderProgram.Uniforms.CORE.VERTEX_COORDS);
             GL.VertexAttribPointer(ShaderProgram.Uniforms.CORE.VERTEX_COORDS, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0 * sizeof(float));
@@ -62,26 +65,39 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
             GL.EnableVertexAttribArray(ShaderProgram.Uniforms.CORE.TEXTURE_COORDS);
             GL.VertexAttribPointer(ShaderProgram.Uniforms.CORE.TEXTURE_COORDS, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 6 * sizeof(float));
 
+            GL.ActiveTexture(TextureUnit.Texture0);
+
             GL.BindVertexArray(0);
+        }
+
+        public void AddTexture(Texture[] textures)
+        {
+            _textures = textures;
+        }
+
+        public void ReplaceTextures(Texture[] textures)
+        {
+            _textures = textures;
         }
 
         public static Mesh TestData()
         {
-            Vertex[] vertices =
+            float[] vertices =
             {
                 // Position         color             texture coordinates
-                new Vertex( new float[]{0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f }), // top right
-                new Vertex( new float[]{0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f }), // bottom right
-                new Vertex( new float[]{-0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f }), // bottom left
-                new Vertex( new float[]{-0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f })  // top left
+                 0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top right
+                 0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom right
+                -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
+                -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f  // top left
             };
 
             int[] indices = {  // note that we start from 0!
                     0, 1, 3,   // first triangle
-                    1, 2, 3    // second triangle
+                    1, 2, 3    // second triangle "textures/grass.jpg"
                 };
 
-            return new Mesh(vertices, indices, new Texture[]{ new Texture("container.png") });
+            //return new Mesh(vertices, indices, new Texture[]{ new Texture("container.png") });
+            return new Mesh(vertices, indices, new Texture[]{ new Texture("textures/grass.jpg") });
         }
     }
 }

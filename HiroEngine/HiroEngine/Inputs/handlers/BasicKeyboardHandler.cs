@@ -14,13 +14,12 @@ namespace HiroEngine.HiroEngine.Inputs.handlers
         public BasicKeyboardHandler(Camera cam)
         {
             _camera = cam;
-            CameraSpeed = 1.0f;
+            CameraSpeed = 2.0f;
         }
 
         public void OnKeyAction(KeyboardKeys key, bool isPressed, bool wasPressed, float time)
         {
-            if(isPressed)
-            Console.WriteLine($"KeyAction: {key}, {isPressed}:{wasPressed},{time}");    
+            //Console.WriteLine($"KeyAction: {key}, {isPressed}:{wasPressed},{time}");    
 
             if(isPressed)
             switch(key)
@@ -58,5 +57,6 @@ namespace HiroEngine.HiroEngine.Inputs.handlers
                 KeyboardKeys.LeftShift
                 };
         }
+
     }
 }

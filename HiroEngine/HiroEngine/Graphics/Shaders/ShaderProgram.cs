@@ -14,11 +14,13 @@ namespace HiroEngine.HiroEngine.Graphics.Shaders
         public struct FragmentShadersType
         {
             public static string BASIC = @"HiroEngine\Graphics\Shaders\Fragments\basic.frag.glsl";
+            public static string BASIC_UI = @"HiroEngine\Graphics\Shaders\Fragments\basic.frag.ui.glsl";
         }
 
         public struct VertexShaderType
         {
             public static string BASIC = @"HiroEngine\Graphics\Shaders\Vertex\basic.vert.glsl";
+            public static string BASIC_UI = @"HiroEngine\Graphics\Shaders\Vertex\basic.vert.ui.glsl";
         }
 
         public struct Uniforms
@@ -48,6 +50,7 @@ namespace HiroEngine.HiroEngine.Graphics.Shaders
             {
                 public static string PROJECTION = "matrix_projection";
                 public static string MODEL = "matrix_model";
+                public static string UI_MODEL = "matrix_ui_model";
                 public static string VIEW = "matrix_view";
             }
         }

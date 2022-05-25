@@ -22,6 +22,9 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, Handle);
 
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
+
             if (path == null) return;
 
             string combinedPath = Path.Combine(Environment.CurrentDirectory, @"Sample/assets", path);
@@ -40,6 +43,30 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
         {
             GL.ActiveTexture(unit);
             GL.BindTexture(TextureTarget.Texture2D, Handle);
+        }
+
+        public void UseUnit(int unitId)
+        {
+            GL.ActiveTexture(GetTextureByUnit(unitId));
+            GL.BindTexture(TextureTarget.Texture2D, Handle);
+        }
+
+        private TextureUnit GetTextureByUnit(int unit)
+        {
+            switch(unit)
+            {
+                case 0: return TextureUnit.Texture0;
+                case 1: return TextureUnit.Texture1;
+                case 2: return TextureUnit.Texture2;
+                case 3: return TextureUnit.Texture3;
+                case 4: return TextureUnit.Texture4;
+                case 5: return TextureUnit.Texture5;
+                case 6: return TextureUnit.Texture6;
+                case 7: return TextureUnit.Texture7;
+                case 8: return TextureUnit.Texture8;
+                case 9: return TextureUnit.Texture9;
+                default: return TextureUnit.Texture0;
+            }
         }
     }
 }

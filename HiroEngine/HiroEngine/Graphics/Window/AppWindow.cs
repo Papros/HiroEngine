@@ -10,82 +10,15 @@ using HiroEngine.HiroEngine.Inputs;
 using HiroEngine.HiroEngine.Graphics.World;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Collections.Generic;
+using HiroEngine.HiroEngine.GUI.Elements;
 
 namespace HiroEngine.HiroEngine.Graphics.Window
 {
     public class AppWindow : GameWindow
     {
 
-        private const float NEAR_CLIPPING = 0.1f;
-        private const float FAR_CLIPPING = 100.0f;
-        private const float ANGLE_FOW = 45.0f;
-
-        private int _vertexArrayId = 0;
-        private int _vertexBufferId = 0;
-        private int _elementsBufferId = 0;
-
-        private float[] _vertices = {
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-                 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-                 0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-                 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-                 0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-
-                -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-
-                 0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-                 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-                 0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-                 0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-                 0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-                 0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-                 0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-                 0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-                -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-
-                -0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-                 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-                 0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-                -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-                -0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f
-            }; //vert                 //color           //text
-
-        private readonly float[] vertices =
-        {
-            // Position         color             texture coordinates
-             0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, // top right
-             0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, // bottom right
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom left
-            -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f  // top left
-        };
-
-        uint[] indices = {  // note that we start from 0!
-                0, 1, 3,   // first triangle
-                1, 2, 3    // second triangle
-            };
-
-        private ShaderProgram _shaderProgram;
-        private Texture _texture;
-        private Matrix4 _model, _view, _projection;
-
+        private ShaderProgram _shaderProgram, _guiShaderProgram;
+        private List<UIElement> _guiList;
         private List<Model> _scene;
 
         private double _time;
@@ -117,6 +50,7 @@ namespace HiroEngine.HiroEngine.Graphics.Window
             AppSettings = AppWindowSettings.GetDefaultSettings();
             ReloadSettings();
             _scene = new List<Model>();
+            _guiList = new List<UIElement>();
         }
 
         public void ReloadSettings()
@@ -128,49 +62,42 @@ namespace HiroEngine.HiroEngine.Graphics.Window
         {
             base.OnLoad();
 
+            _shaderProgram = new ShaderProgram(ShaderProgram.VertexShaderType.BASIC, ShaderProgram.FragmentShadersType.BASIC);
+            _guiShaderProgram = new ShaderProgram(ShaderProgram.VertexShaderType.BASIC_UI, ShaderProgram.FragmentShadersType.BASIC_UI);
+
+            _shaderProgram.Use();
+
+            CursorGrabbed = true;
+
+            
+            _scene.Add(new Model("wooden_tower/tower2.dae"));
+            _scene[0].AddPosition(new Vector3(0, 0, 0));
+            _scene[0].AddRotation(-1.5708f, 0, 0);
+            Texture towerText = new Texture("wooden_tower/textures/Wood_Tower_Col.jpg");
+            _scene[0].Components[0].AddTexture(new Texture[]{ towerText });
+            
+
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f); // Setting "default" background color
             GL.Enable(EnableCap.DepthTest); // Enabling depth test, 
 
-            _vertexArrayId = GL.GenVertexArray();
-            GL.BindVertexArray(_vertexArrayId);
 
-            _vertexBufferId = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, _vertexBufferId);
-            GL.BufferData(BufferTarget.ArrayBuffer, vertices.Length * sizeof(float), vertices, BufferUsageHint.StaticDraw);
+            Shape floor = Shape.Plane(new Vector3(-5, 0, -5), new Vector2(10, 10));
+            floor.AddTexture(new Texture[] { new Texture("textures/grass.jpg") });
+            _scene.Add(new Model(floor));
 
-            _elementsBufferId = GL.GenBuffer();
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, _elementsBufferId);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, indices.Length * sizeof(uint), indices, BufferUsageHint.StaticDraw);
+            //_scene.Add(new Model(Mesh.TestData()));
 
-            _shaderProgram = new ShaderProgram(ShaderProgram.VertexShaderType.BASIC, ShaderProgram.FragmentShadersType.BASIC);
-            _shaderProgram.Use();
+            UIElement minimap = new UIElement(new Vector2(-0.98f, 0.48f), new Vector2(1, 1));
+            minimap.Element = Shape2D.Rectangle(new Vector2(0, 0), new Vector2(0.5f, 0.5f));
+            minimap.Element.AddTexture(new Texture[] { new Texture("UI/minimap.png") });
+            _guiList.Add(minimap);
 
-            Console.WriteLine("Test");
+            UIElement bar = new UIElement(new Vector2(-0.3f, -0.98f), new Vector2(0.6f, 0.2f));
+            bar.Element = Shape2D.Rectangle(new Vector2(0, 0), new Vector2(0.6f, 0.2f));
+            bar.Element.AddTexture(new Texture[] { new Texture("UI/bar.png") });
+            _guiList.Add(bar);
 
-            GL.EnableVertexAttribArray(ShaderProgram.Uniforms.CORE.VERTEX_COORDS);
-            GL.VertexAttribPointer(ShaderProgram.Uniforms.CORE.VERTEX_COORDS, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 0 * sizeof(float));
-
-            GL.EnableVertexAttribArray(ShaderProgram.Uniforms.CORE.VERTEX_COLOR);
-            GL.VertexAttribPointer(ShaderProgram.Uniforms.CORE.VERTEX_COLOR, 3, VertexAttribPointerType.Float, false, 8 * sizeof(float), 3 * sizeof(float));
-
-            GL.EnableVertexAttribArray(ShaderProgram.Uniforms.CORE.TEXTURE_COORDS);
-            GL.VertexAttribPointer(ShaderProgram.Uniforms.CORE.TEXTURE_COORDS, 2, VertexAttribPointerType.Float, false, 8 * sizeof(float), 6 * sizeof(float));
-
-            GL.ActiveTexture(TextureUnit.Texture0);
-
-            Model test = new Model(Mesh.TestData());
-
-            _scene.Add(test);
-            //_scene.Add(new Model("wooden_tower/tower2.dae"));
-
-            //_texture = new Texture("wooden_tower/textures/Wood_Tower_Col.jpg");
-            _texture = new Texture("container.png");
-            _texture.Use(TextureUnit.Texture0);
-            _shaderProgram.SetInt(ShaderProgram.Uniforms.TEXTURES.TEXTURE_1, 0);
-
-            _view = Matrix4.CreateTranslation(0.0f, 0.0f, -3.0f);
-            _projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(ANGLE_FOW), Size.X / (float)Size.Y, NEAR_CLIPPING, FAR_CLIPPING);
-            CursorGrabbed = true;
+            _shaderProgram.SetMatrix4(ShaderProgram.Uniforms.MATRIX.PROJECTION, Camera.GetProjectionMatrix());
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -180,34 +107,29 @@ namespace HiroEngine.HiroEngine.Graphics.Window
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
             GL.BindVertexArray(0);
-            GL.DeleteVertexArray(_vertexArrayId);
-            GL.DeleteBuffer(_vertexBufferId);
-            GL.DeleteBuffer(_elementsBufferId);
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
 
-            _time += 4.0 * e.Time;
+            
+            _time += e.Time;
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            GL.BindVertexArray(_vertexArrayId);
 
-            _texture.Use(TextureUnit.Texture0);
             _shaderProgram.Use();
-
-            _model = Matrix4.Identity;// * Matrix4.CreateRotationX((float)MathHelper.DegreesToRadians(_time));
-
-            _shaderProgram.SetMatrix4(ShaderProgram.Uniforms.MATRIX.MODEL, _model);
-            _shaderProgram.SetMatrix4(ShaderProgram.Uniforms.MATRIX.PROJECTION, Camera.GetProjectionMatrix());
             _shaderProgram.SetMatrix4(ShaderProgram.Uniforms.MATRIX.VIEW, Camera.GetViewMatrix());
 
-             GL.DrawElements(PrimitiveType.Triangles, indices.Length, DrawElementsType.UnsignedInt, 0);
-           
-            _scene.ForEach((mesh) =>
+            _scene.ForEach((model) =>
             {
-                mesh.Draw(_shaderProgram.ID);
+                model.Draw(_shaderProgram);
+            });
+
+            _guiShaderProgram.Use();
+            _guiList.ForEach((guiElement) =>
+            {
+                guiElement.Draw(_guiShaderProgram);
             });
 
             SwapBuffers();
