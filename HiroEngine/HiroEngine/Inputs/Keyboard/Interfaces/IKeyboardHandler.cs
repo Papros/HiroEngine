@@ -1,7 +1,4 @@
 ﻿using HiroEngine.HiroEngine.Inputs.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HiroEngine.HiroEngine.Inputs.interfaces
 {

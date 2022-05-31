@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using HiroEngine.HiroEngine.Graphics.Shaders;
+﻿using HiroEngine.HiroEngine.Graphics.Shaders;
 using OpenTK.Graphics.OpenGL4;
 
 namespace HiroEngine.HiroEngine.Graphics.Elements
 {
-    public class Mesh
+    public class Mesh : IDrawable
     {
         private float[] _vertices;
         private int[] _indices;
@@ -25,9 +22,9 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
             Setup();
         }
 
-        public void Draw(ShaderProgram shader)
+        public void Draw(ShaderProgram shaderProgram)
         {
-            shader.Use();
+            shaderProgram.Use();
             GL.BindVertexArray(VAO);
 
             for (int i = 0; i < _textures.Length; i++)

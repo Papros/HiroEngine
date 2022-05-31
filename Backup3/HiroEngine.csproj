@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Platforms>AnyCPU;x64</Platforms>
     <FileUpgradeFlags>40</FileUpgradeFlags>
-    <UpgradeBackupLocation>C:\Users\piotr.papros\Desktop\Private\Repo\HiroEngine\Backup3\</UpgradeBackupLocation>
-    <OldToolsVersion>15.0</OldToolsVersion>
+    <UpgradeBackupLocation>C:\Users\piotr.papros\Desktop\Private\Repo\HiroEngine\Backup2\HiroEngine\</UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="HiroEngine\Audio\" />
@@ -39,9 +39,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="HiroEngine\Graphics\Shaders\Fragments\basic.frag.ui.glsl">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="HiroEngine\Graphics\Shaders\Fragments\clickcheat.frag.glsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="HiroEngine\Graphics\Shaders\Vertex\basic.vert.glsl">

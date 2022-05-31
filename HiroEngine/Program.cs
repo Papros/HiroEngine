@@ -1,5 +1,6 @@
 ﻿using HiroEngine.HiroEngine.Graphics.Window;
 using HiroEngine.HiroEngine.Inputs.handlers;
+using HiroEngine.HiroEngine.Inputs.Mouse;
 
 namespace HiroEngine
 {

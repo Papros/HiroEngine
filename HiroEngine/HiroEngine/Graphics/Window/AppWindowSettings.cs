@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace HiroEngine.HiroEngine.Graphics.Window
+﻿namespace HiroEngine.HiroEngine.Graphics.Window
 {
     public struct AppWindowSettings
     {

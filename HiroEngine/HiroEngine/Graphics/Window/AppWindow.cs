@@ -1,6 +1,5 @@
 ﻿using OpenTK.Windowing.Common;
 using OpenTK.Windowing.Desktop;
-using System;
 using OpenTK.Graphics.OpenGL4;
 using HiroEngine.HiroEngine.Graphics.Shaders;
 using System.ComponentModel;
@@ -11,6 +10,7 @@ using HiroEngine.HiroEngine.Graphics.World;
 using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Collections.Generic;
 using HiroEngine.HiroEngine.GUI.Elements;
+using HiroEngine.HiroEngine.Inputs.Mouse;
 
 namespace HiroEngine.HiroEngine.Graphics.Window
 {

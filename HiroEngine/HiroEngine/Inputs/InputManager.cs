@@ -1,10 +1,9 @@
 ﻿using HiroEngine.HiroEngine.Inputs.Enums;
 using HiroEngine.HiroEngine.Inputs.interfaces;
+using HiroEngine.HiroEngine.Inputs.Mouse;
 using OpenTK.Windowing.Common;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace HiroEngine.HiroEngine.Inputs
 {
@@ -14,6 +13,8 @@ namespace HiroEngine.HiroEngine.Inputs
         public IKeyboardHandler KeyboardHandler { get; set; }
         public IWindowHandler WindowHandler { get; set; }
         public List<Keys> SubscribeKeys { get; private set; }
+
+        private float mouseX, mouseY;
 
         public InputManager()
         {
@@ -32,7 +33,7 @@ namespace HiroEngine.HiroEngine.Inputs
         {
             if(MouseHandler != null)
             {
-                MouseHandler.OnMouseDown((MouseKeys)e.Button, (InputType)e.Action, (CorespondingKeyEvent)e.Modifiers, e.IsPressed);
+                MouseHandler.OnMouseDown((MouseKeys)e.Button, (InputType)e.Action, (CorespondingKeyEvent)e.Modifiers, e.IsPressed, mouseX, mouseY);
             }
         }
 
@@ -40,6 +41,8 @@ namespace HiroEngine.HiroEngine.Inputs
         {
             if (MouseHandler != null)
             {
+                mouseX = e.X;
+                mouseY = e.Y;
                 MouseHandler.OnMouseMove(e.X, e.Y);
             }
         }

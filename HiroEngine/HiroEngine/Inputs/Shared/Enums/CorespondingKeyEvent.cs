@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace HiroEngine.HiroEngine.Inputs.Enums
+﻿namespace HiroEngine.HiroEngine.Inputs.Enums
 {
     public enum CorespondingKeyEvent
     {

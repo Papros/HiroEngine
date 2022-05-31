@@ -1,14 +1,13 @@
 ﻿using HiroEngine.HiroEngine.Data.Logger;
 using HiroEngine.HiroEngine.Graphics.Elements;
 using HiroEngine.HiroEngine.Graphics.Shaders;
+using HiroEngine.HiroEngine.Inputs.Mouse;
 using OpenTK.Mathematics;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace HiroEngine.HiroEngine.GUI.Elements
 {
-    public class UIElement : Clickable
+    public class UIElement : IClickable
     {
         public List<UIElement> ChildElements { get; private set; }
         public bool IsActive { get; set; }
@@ -56,5 +55,9 @@ namespace HiroEngine.HiroEngine.GUI.Elements
             }
         }
 
+        public IDrawable GetDrawable()
+        {
+            return Element;
+        }
     }
 }

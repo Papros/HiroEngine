@@ -1,11 +1,7 @@
 ﻿using HiroEngine.HiroEngine.Graphics.World;
 using HiroEngine.HiroEngine.Inputs.Enums;
-using HiroEngine.HiroEngine.Inputs.interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace HiroEngine.HiroEngine.Inputs.handlers
+namespace HiroEngine.HiroEngine.Inputs.Mouse
 {
     public class BasicMouseHandler : IMouseHandler
     {
@@ -14,15 +10,25 @@ namespace HiroEngine.HiroEngine.Inputs.handlers
         private Camera _camera;
         private float _lastPosX, _lastPosY;
         private bool moved = false;
+
+        private MouseClickHandlers clickHandler;
+
         public BasicMouseHandler(Camera cam, float sensitivity = 0.15f)
         {
             _camera = cam;
             Sensitivity = sensitivity;
         }
 
-        public void OnMouseDown(MouseKeys key, InputType action, CorespondingKeyEvent modifier, bool isPressed)
+        public void RegisterClickHandler()
         {
-           //Do nothing
+            clickHandler = new MouseClickHandlers(MouseClickHandlers.ClickHandleStrategy.CHEAT);
+        }
+
+        public void OnMouseDown(MouseKeys key, InputType action, CorespondingKeyEvent modifier, bool isPressed, float mouseX, float mouseY)
+        {
+            //Do nothing
+            if (clickHandler == null) RegisterClickHandler();
+            clickHandler.HandleClick((int)mouseX, (int)mouseY, _camera);
         }
 
         public void OnMouseMove(float mouseX, float mouseY)

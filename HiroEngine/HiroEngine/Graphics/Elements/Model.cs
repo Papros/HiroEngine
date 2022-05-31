@@ -4,11 +4,10 @@ using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace HiroEngine.HiroEngine.Graphics.Elements
 {
-    public class Model
+    public class Model : IDrawable
     {
         public List<Mesh> Components { get; private set; }
         public Vector3 position = new Vector3(0,0,0);

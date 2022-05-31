@@ -15,6 +15,7 @@ namespace HiroEngine.HiroEngine.Graphics.Shaders
         {
             public static string BASIC = @"HiroEngine\Graphics\Shaders\Fragments\basic.frag.glsl";
             public static string BASIC_UI = @"HiroEngine\Graphics\Shaders\Fragments\basic.frag.ui.glsl";
+            public static string CLICKCHEAT = @"HiroEngine\Graphics\Shaders\Fragments\clickcheat.frag.glsl";
         }
 
         public struct VertexShaderType
@@ -52,6 +53,11 @@ namespace HiroEngine.HiroEngine.Graphics.Shaders
                 public static string MODEL = "matrix_model";
                 public static string UI_MODEL = "matrix_ui_model";
                 public static string VIEW = "matrix_view";
+            }
+
+            public struct GUI
+            {
+                public static string COLOR = "cheatedColor";
             }
         }
 

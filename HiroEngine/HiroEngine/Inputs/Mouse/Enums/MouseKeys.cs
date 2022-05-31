@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace HiroEngine.HiroEngine.Inputs.Enums
+﻿namespace HiroEngine.HiroEngine.Inputs.Mouse
 {
     public enum MouseKeys { 
         Button1 = 0,

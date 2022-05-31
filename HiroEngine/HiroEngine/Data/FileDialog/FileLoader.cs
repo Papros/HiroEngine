@@ -2,9 +2,6 @@
 using HiroEngine.HiroEngine.Graphics.Elements;
 using System;
 using System.Collections.Generic;
-using HiroEngine.HiroEngine.Data.Logger;
-using System.Linq;
-using System.Text;
 
 namespace HiroEngine.HiroEngine.Data.FileDialog
 {

@@ -1,9 +1,6 @@
 ﻿using HiroEngine.HiroEngine.Graphics.World;
 using HiroEngine.HiroEngine.Inputs.Enums;
 using HiroEngine.HiroEngine.Inputs.interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HiroEngine.HiroEngine.Inputs.handlers
 {

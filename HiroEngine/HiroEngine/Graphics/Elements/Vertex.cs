@@ -1,9 +1,4 @@
-﻿using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace HiroEngine.HiroEngine.Graphics.Elements
+﻿namespace HiroEngine.HiroEngine.Graphics.Elements
 {
     public struct Vertex
     {
