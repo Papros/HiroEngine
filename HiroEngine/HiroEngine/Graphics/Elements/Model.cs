@@ -11,9 +11,16 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
     {
         public List<Mesh> Components { get; private set; }
         public Vector3 position = new Vector3(0,0,0);
-        public Matrix4 modelMatrix = Matrix4.Identity;
-        public Matrix4 rotationMatrix = Matrix4.Identity;
-        public Matrix4 transformMatrix = Matrix4.Identity;
+        public Vector3 axisMin { get; private set; }
+        public Vector3 axisMax { get; private set; }
+
+        public Model(Model model)
+        {
+            this.Components = model.Components;
+            this.position = model.position;
+            this.axisMin = model.axisMin;
+            this.axisMax = model.axisMax;
+        }
 
         public Model(string path)
         {
@@ -44,36 +51,8 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
             Components = FileLoader.LoadFile(combinedPath);
         }
 
-        public void AddPosition(Vector3 position)
-        {
-            modelMatrix = Matrix4.CreateTranslation(position);
-        }
-
-        public void MoveBy(Vector3 move)
-        {
-            modelMatrix *= Matrix4.CreateTranslation(move);
-        }
-
-        public void AddTransform(float scale)
-        {
-            modelMatrix = Matrix4.CreateScale(scale);
-        }
-
-        public void AddRotation(float x, float y, float z)
-        {
-            rotationMatrix = Matrix4.CreateRotationX(x) * Matrix4.CreateRotationY(y) * Matrix4.CreateRotationZ(z);
-        }
-
-        public void AddRotationDgr(float x, float y, float z)
-        {
-            const float RAD = 0.0174533f;
-            rotationMatrix = Matrix4.CreateRotationX(x*RAD) * Matrix4.CreateRotationY(y*RAD) * Matrix4.CreateRotationZ(z*RAD);
-        }
-
         public void Draw(ShaderProgram shaderProgram)
         {
-            shaderProgram.SetMatrix4(ShaderProgram.Uniforms.MATRIX.MODEL, modelMatrix * rotationMatrix);
-
             foreach(Mesh mesh in Components)
             {
                 mesh.Draw(shaderProgram);

@@ -1,24 +1,28 @@
 ﻿using HiroEngine.HiroEngine.Graphics.Shaders;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 
 namespace HiroEngine.HiroEngine.Graphics.Elements
 {
     public class Mesh : IDrawable
     {
-        private float[] _vertices;
+        public float[] Vertices { get; private set; }
         private int[] _indices;
         private Texture[] _textures;
+        public Vector3 axisMin { get; private set; }
+        public Vector3 axisMax { get; private set; }
 
         private int VAO, VBO, EBO;
 
         public int Size {  get { return _indices.Length;  } }
 
-        public Mesh(float[] vertices, int[] indices, Texture[] textures)
+        public Mesh(float[] vertices, int[] indices, Texture[] textures, Vector3 min = new Vector3(), Vector3 max = new Vector3())
         {
-            _vertices = vertices;
+            Vertices = vertices;
             _indices = indices;
             _textures = textures != null ? textures : new Texture[] { };
-
+            axisMax = max;
+            axisMin = min;
             Setup();
         }
 
@@ -48,7 +52,7 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
             GL.BindVertexArray(VAO);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.BufferData(BufferTarget.ArrayBuffer, _vertices.Length * sizeof(float), _vertices, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ArrayBuffer, Vertices.Length * sizeof(float), Vertices, BufferUsageHint.StaticDraw);
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, EBO);
             GL.BufferData(BufferTarget.ElementArrayBuffer, _indices.Length * sizeof(uint), _indices, BufferUsageHint.StaticDraw);
@@ -94,7 +98,7 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
                 };
 
             //return new Mesh(vertices, indices, new Texture[]{ new Texture("container.png") });
-            return new Mesh(vertices, indices, new Texture[]{ new Texture("textures/grass.jpg") });
+            return new Mesh(vertices, indices, new Texture[]{ new Texture("textures/grass.jpg") }, new Vector3(-0.5f,-0.5f,-0.5f), new Vector3(0.5f,0.5f,0.5f));
         }
     }
 }

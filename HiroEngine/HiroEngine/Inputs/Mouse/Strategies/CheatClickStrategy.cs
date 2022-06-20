@@ -3,6 +3,7 @@ using HiroEngine.HiroEngine.Graphics.World;
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL4;
 using HiroEngine.HiroEngine.Data.Logger;
+using HiroEngine.HiroEngine.Engine.Elements;
 
 namespace HiroEngine.HiroEngine.Inputs.Mouse
 {
@@ -26,15 +27,22 @@ namespace HiroEngine.HiroEngine.Inputs.Mouse
             return true;
         }
 
-        public void HandleClick(int x, int y, Camera cam)
+        public void HandleClick(int x, int y, GameEngine engine)
         {
+            Logger.Warn("Click!?!", $"Clicked on ({x}, {y}): id = unknown");
+
+            engine.Physics.Raycast(engine.Window.Camera.GetCameraRay());
+
+            /*
             cheatClickShader.Use();
             drawQueue.ForEach((clickable) => clickable.GetDrawable().Draw(cheatClickShader));
             GL.ReadBuffer(ReadBufferMode.ColorAttachment1);
             var pixel = new float[1];
             GL.ReadPixels(x, y, 1, 1, PixelFormat.Rgba, PixelType.UnsignedByte, pixel);
 
-            Logger.Warn("Click!",$"Clicked on ({x}, {y}): id = { pixel[0] }");
+            Logger.Warn("Click!?!",$"Clicked on ({x}, {y}): id = { pixel[0] }");
+
+            */
         }
 
         public int RegisterClickHandler(IClickable clickable)

@@ -16,6 +16,7 @@ namespace HiroEngine.HiroEngine.Graphics.Shaders
             public static string BASIC = @"HiroEngine\Graphics\Shaders\Fragments\basic.frag.glsl";
             public static string BASIC_UI = @"HiroEngine\Graphics\Shaders\Fragments\basic.frag.ui.glsl";
             public static string CLICKCHEAT = @"HiroEngine\Graphics\Shaders\Fragments\clickcheat.frag.glsl";
+            public static string DEBUG = @"HiroEngine\Graphics\Shaders\Fragments\debug.frag.glsl";
         }
 
         public struct VertexShaderType
@@ -58,6 +59,11 @@ namespace HiroEngine.HiroEngine.Graphics.Shaders
             public struct GUI
             {
                 public static string COLOR = "cheatedColor";
+            }
+
+            public struct SETTINGS
+            {
+                public static string DEBUG = "debug";
             }
         }
 
@@ -161,6 +167,12 @@ namespace HiroEngine.HiroEngine.Graphics.Shaders
         {
             GL.UseProgram(ID);
             GL.Uniform3(GetUniformLocation(name), ref data);
+        }
+
+        public void SetFlag(string name, bool data)
+        {
+            GL.UseProgram(ID);
+            GL.Uniform1(GetUniformLocation(name), data ? 1 : 0);
         }
 
         public int GetUniformLocation(string name)

@@ -11,15 +11,18 @@ using OpenTK.Windowing.GraphicsLibraryFramework;
 using System.Collections.Generic;
 using HiroEngine.HiroEngine.GUI.Elements;
 using HiroEngine.HiroEngine.Inputs.Mouse;
+using HiroEngine.HiroEngine.Engine.Elements;
+using HiroEngine.HiroEngine.Physics.Structures.Colliders;
 
 namespace HiroEngine.HiroEngine.Graphics.Window
 {
     public class AppWindow : GameWindow
     {
 
-        private ShaderProgram _shaderProgram, _guiShaderProgram;
-        private List<UIElement> _guiList;
-        private List<Model> _scene;
+        private ShaderProgram _shaderProgram, _guiShaderProgram, _debugShaderProgram;
+
+        internal GUIScene GUIScene;
+        internal Scene Scene;
 
         private double _time;
 
@@ -28,7 +31,7 @@ namespace HiroEngine.HiroEngine.Graphics.Window
 
         public AppWindowSettings AppSettings { get; private set; }
 
-        public static NativeWindowSettings GetWindowSettings(int width, int height, string title)
+        public static NativeWindowSettings GetWindowSettings(int width = 1280, int height = 720, string title = "HiroEngine")
         {
             NativeWindowSettings nativeSetting = NativeWindowSettings.Default;
             nativeSetting.Size = new OpenTK.Mathematics.Vector2i(width, height);
@@ -49,8 +52,8 @@ namespace HiroEngine.HiroEngine.Graphics.Window
             Camera = new Camera(new Vector3(0,10,5), (float)Size.X / (float)Size.Y );
             AppSettings = AppWindowSettings.GetDefaultSettings();
             ReloadSettings();
-            _scene = new List<Model>();
-            _guiList = new List<UIElement>();
+            Scene = new Scene();
+            GUIScene = new GUIScene();
         }
 
         public void ReloadSettings()
@@ -67,28 +70,39 @@ namespace HiroEngine.HiroEngine.Graphics.Window
 
             _shaderProgram.Use();
 
-            CursorGrabbed = false;// true;
+            CursorGrabbed = true;// false;// true;
+            GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f); // Setting "default" background color
+            GL.Enable(EnableCap.DepthTest); // Enabling depth test, 
+            GL.Enable(EnableCap.ClipDistance1); // Enabling depth test, 
+            // MODELS
+            /*
             Texture towerText = new Texture("wooden_tower/textures/Wood_Tower_Col.jpg");
 
             Model tower = new Model("wooden_tower/tower2.dae");
             tower.Components[0].AddTexture(new Texture[] { towerText });
-            tower.AddPosition(new Vector3(0, 0, 0));
-            tower.AddRotation(-1.5708f, 0, 0);
+            WorldObject towerO1 = new WorldObject(tower, true);
+            towerO1.AddPosition(0, 0, 0);
+            towerO1.AddRotation(-1.5708f, 0, 0);
+            towerO1.AddTransform(0.7f);
 
             Model tower2 = new Model("wooden_tower/tower2.dae");
             tower2.Components[0].AddTexture(new Texture[] { towerText });
-            tower2.AddPosition(new Vector3(-10, 0, 0));
-            tower2.AddRotation(-1.5708f, 0, 0);
+            WorldObject towerO2 = new WorldObject(tower2, true);
+            towerO2.AddPosition(-10, 0, 0);
+            towerO2.AddRotation(-1.5708f, -0.9f, 0);
+            towerO2.AddTransform(1.2f);
 
             Model tower3 = new Model("wooden_tower/tower2.dae");
             tower3.Components[0].AddTexture(new Texture[] { towerText });
-            tower3.AddPosition(new Vector3(10, 0, 0));
-            tower3.AddRotation(-1.5708f, 0, 0);
+            WorldObject towerO3 = new WorldObject(tower3, true);
+            towerO3.AddPosition(10, 0, 0);
+            towerO3.AddRotation(-1.5708f, 0.5f, 0);
+            towerO3.AddTransform(1.9f);
 
-            _scene.Add(tower);
-            _scene.Add(tower2);
-            _scene.Add(tower3);
-            
+            scene.worldObjects.Add(towerO1);
+            scene.worldObjects.Add(towerO2);
+            scene.worldObjects.Add(towerO3);
+
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f); // Setting "default" background color
             GL.Enable(EnableCap.DepthTest); // Enabling depth test, 
             // GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line); To draw only edges
@@ -96,10 +110,9 @@ namespace HiroEngine.HiroEngine.Graphics.Window
 
             Shape floor = Shape.Plane(new Vector3(-15, 0, -5), new Vector2(30, 10));
             floor.AddTexture(new Texture[] { new Texture("container.png") });
-            _scene.Add(new Model(floor));
-
-            //_scene.Add(new Model(Mesh.TestData()));
-
+            scene.worldObjects.Add(new WorldObject(new Model(floor), false));
+            */
+            /*
             UIElement minimap = new UIElement(new Vector2(-0.98f, 0.48f), new Vector2(1, 1));
             minimap.Element = Shape2D.Rectangle(new Vector2(0, 0), new Vector2(0.5f, 0.5f));
             minimap.Element.AddTexture(new Texture[] { new Texture("UI/minimap.png") });
@@ -109,8 +122,16 @@ namespace HiroEngine.HiroEngine.Graphics.Window
             bar.Element = Shape2D.Rectangle(new Vector2(0, 0), new Vector2(0.6f, 0.2f));
             bar.Element.AddTexture(new Texture[] { new Texture("UI/bar.png") });
             _guiList.Add(bar);
+            */
 
             _shaderProgram.SetMatrix4(ShaderProgram.Uniforms.MATRIX.PROJECTION, Camera.GetProjectionMatrix());
+
+            if (AppSettings.Debug)
+            {
+                _debugShaderProgram = new ShaderProgram(ShaderProgram.VertexShaderType.BASIC, ShaderProgram.FragmentShadersType.DEBUG);
+                _debugShaderProgram.SetMatrix4(ShaderProgram.Uniforms.MATRIX.PROJECTION, Camera.GetProjectionMatrix());
+            }
+
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -134,16 +155,18 @@ namespace HiroEngine.HiroEngine.Graphics.Window
             _shaderProgram.Use();
             _shaderProgram.SetMatrix4(ShaderProgram.Uniforms.MATRIX.VIEW, Camera.GetViewMatrix());
 
-            _scene.ForEach((model) =>
+            Scene.Draw(_shaderProgram);
+            if (AppSettings.Debug)
             {
-                model.Draw(_shaderProgram);
-            });
+                _shaderProgram.SetFlag(ShaderProgram.Uniforms.SETTINGS.DEBUG, true);
+                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line); //To draw only edges
+                Scene.DrawCollider(_shaderProgram);
+                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill); // To draw only edges
+                _shaderProgram.SetFlag(ShaderProgram.Uniforms.SETTINGS.DEBUG, false);
+            }
 
             _guiShaderProgram.Use();
-            _guiList.ForEach((guiElement) =>
-            {
-                guiElement.Draw(_guiShaderProgram);
-            });
+            GUIScene.Draw(_guiShaderProgram);
 
             SwapBuffers();
 

@@ -6,7 +6,7 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
     {
         Color4 color;
 
-        private Shape2D(float[] vertices, int[] indices, Texture[] textures) : base(vertices, indices, textures)
+        private Shape2D(float[] vertices, int[] indices, Texture[] textures, Vector3 min, Vector3 max) : base(vertices, indices, textures, min, max)
         {
 
         }
@@ -27,7 +27,7 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
                     1, 2, 3    // second triangle
                 };
 
-            return new Shape2D(vertices, indices, new Texture[] { new Texture("container.png") });
+            return new Shape2D(vertices, indices, new Texture[] { new Texture("container.png") }, new Vector3(), new Vector3());
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using HiroEngine.HiroEngine.Graphics.World;
+﻿using HiroEngine.HiroEngine.Engine.Elements;
+using HiroEngine.HiroEngine.Graphics.World;
 using HiroEngine.HiroEngine.Inputs.Enums;
 
 namespace HiroEngine.HiroEngine.Inputs.Mouse
@@ -7,15 +8,15 @@ namespace HiroEngine.HiroEngine.Inputs.Mouse
     {
         public float Sensitivity { get; set; }
 
-        private Camera _camera;
+        private GameEngine engine;
         private float _lastPosX, _lastPosY;
         private bool moved = false;
 
         private MouseClickHandlers clickHandler;
 
-        public BasicMouseHandler(Camera cam, float sensitivity = 0.15f)
+        public BasicMouseHandler(GameEngine engine, float sensitivity = 0.15f)
         {
-            _camera = cam;
+            this.engine = engine;
             Sensitivity = sensitivity;
         }
 
@@ -28,7 +29,7 @@ namespace HiroEngine.HiroEngine.Inputs.Mouse
         {
             //Do nothing
             if (clickHandler == null) RegisterClickHandler();
-            clickHandler.HandleClick((int)mouseX, (int)mouseY, _camera);
+            clickHandler.HandleClick((int)mouseX, (int)mouseY, engine);
         }
 
         public void OnMouseMove(float mouseX, float mouseY)
@@ -45,14 +46,14 @@ namespace HiroEngine.HiroEngine.Inputs.Mouse
                 var deltaY = mouseY - _lastPosY;
                 _lastPosX = mouseX;
                 _lastPosY = mouseY;
-                _camera.Yaw += deltaX * Sensitivity;
-                _camera.Pitch -= deltaY * Sensitivity;
+                engine.Window.Camera.Yaw += deltaX * Sensitivity;
+                engine.Window.Camera.Pitch -= deltaY * Sensitivity;
             }
         }
 
         public void OnMouseWheel(float offset)
         {
-            _camera.Fov -= offset;
+            engine.Window.Camera.Fov -= offset;
         }
     }
 }

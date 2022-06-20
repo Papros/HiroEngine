@@ -1,5 +1,6 @@
 ﻿using Assimp;
 using HiroEngine.HiroEngine.Graphics.Elements;
+using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 
@@ -28,6 +29,9 @@ namespace HiroEngine.HiroEngine.Data.FileDialog
             int[] indicies = mesh.GetIndices();
             float[] vertex = new float[mesh.Vertices.Count * 8];
 
+            Vector3 axisMin = new Vector3(mesh.Vertices[0].X, mesh.Vertices[0].Y, mesh.Vertices[0].Z);
+            Vector3 axisMax = new Vector3(axisMin);
+
             for (int i = 0; i < mesh.Vertices.Count; i++)
             {
                 var pos = mesh.Vertices[i];
@@ -38,18 +42,26 @@ namespace HiroEngine.HiroEngine.Data.FileDialog
                 vertex[i * 8 + 1] = pos.Y;
                 vertex[i * 8 + 2] = pos.Z;
 
+                if (pos.X > axisMax.X) axisMax.X = pos.X; 
+                else if (pos.X < axisMin.X) axisMin.X = pos.X;
+
+                if (pos.Y > axisMax.Y) axisMax.Y = pos.Y;
+                else if (pos.Y < axisMin.Y) axisMin.Y = pos.Y;
+
+                if (pos.Z > axisMax.Z) axisMax.Z = pos.Z;
+                else if (pos.Z < axisMin.Z) axisMin.Z = pos.Z;                
+                
                 vertex[i * 8 + 3] = normal.X;
                 vertex[i * 8 + 4] = normal.Y;
                 vertex[i * 8 + 5] = normal.Z;
 
                 vertex[i * 8 + 6] = textcoord.X;
                 vertex[i * 8 + 7] = textcoord.Y;
-
             }
-            Console.WriteLine($"Textures: {scene.Materials[mesh.MaterialIndex].TextureDiffuse.FilePath};");
+
             Texture[] textures = new Texture[] { new Texture(scene.Materials[mesh.MaterialIndex].TextureDiffuse.FilePath) };
 
-            return new HiroEngine.Graphics.Elements.Mesh(vertex, indicies, textures);
+            return new HiroEngine.Graphics.Elements.Mesh(vertex, indicies, textures, axisMin, axisMax);
         }
     }
 }

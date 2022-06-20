@@ -1,4 +1,5 @@
-﻿using HiroEngine.HiroEngine.Graphics.World;
+﻿using HiroEngine.HiroEngine.Engine.Elements;
+using HiroEngine.HiroEngine.Graphics.World;
 
 namespace HiroEngine.HiroEngine.Inputs.Mouse
 {
@@ -25,9 +26,9 @@ namespace HiroEngine.HiroEngine.Inputs.Mouse
             }
         }
 
-        public void HandleClick(int x, int y, Camera cam)
+        public void HandleClick(int x, int y, GameEngine engine)
         {
-            clickHandle.HandleClick(x, y, cam);
+            clickHandle.HandleClick(x, y, engine);
         }
 
         public int Register(IClickable clickable)

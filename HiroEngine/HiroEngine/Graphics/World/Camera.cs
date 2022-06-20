@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using HiroEngine.HiroEngine.Physics.Basic;
+using OpenTK.Mathematics;
 using System;
 
 namespace HiroEngine.HiroEngine.Graphics.World
@@ -77,6 +78,11 @@ namespace HiroEngine.HiroEngine.Graphics.World
 
             _right = Vector3.Normalize(Vector3.Cross(_front, Vector3.UnitY));
             _up = Vector3.Normalize(Vector3.Cross(_right, _front));
+        }
+
+        public Ray GetCameraRay()
+        {
+            return new Ray(this.Front, this.Position);
         }
     }
 }
