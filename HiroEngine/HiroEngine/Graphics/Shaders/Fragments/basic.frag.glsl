@@ -4,12 +4,13 @@ layout (location = 0) out vec4 color;
 
 uniform vec4 light_color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 uniform vec2 light_position;
-uniform float saturation = 1.0f;
+uniform float light_saturation = 0.8f;
+uniform float light_limit = 1.0f;
+uniform float light_power = 0.5f;
+uniform bool debug = false;
 
 uniform sampler2D texture1;
 uniform sampler2D texture2;
-
-const float limit = 1.0f;
 
 in DATA
 {
@@ -20,10 +21,7 @@ in DATA
 
 
 void main() {
-	float intensity = 1.0f*0.2f / length(fs_in.position.xy - light_position);
-	intensity = ( intensity < limit ? intensity : limit );
-	color =  texture(texture1, fs_in.textCoord) * vec4( fs_in.color * saturation * intensity, 1.0f);
-	//color = vec4( fs_in.color * saturation * intensity, 1.0f);
-	//color = vec4(fs_in.textCoord, 1.0f, 1.0f);
-	//color = mix(texture(texture1, fs_in.textCoord), texture(texture2, fs_in.textCoord), 0.2);
+	float intensity = light_power / length(fs_in.position.xy - light_position);
+	intensity = 1.0f;//( intensity < light_limit ? intensity : light_limit );
+	color = !debug ? texture(texture1, fs_in.textCoord) : vec4(fs_in.color, 0.7f); // * vec4( fs_in.color * light_power * intensity, 1.0f);
 }
