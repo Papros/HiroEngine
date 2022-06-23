@@ -41,7 +41,7 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
                 {
                     bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
                     BitmapData bmpData = bmp.LockBits(new System.Drawing.Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-                    GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmp.Width, bmp.Height, 0, OpenTK.Graphics.OpenGL4.PixelFormat.Rgba, PixelType.UnsignedByte, bmpData.Scan0);
+                    GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.CompressedRgba, bmp.Width, bmp.Height, 0, OpenTK.Graphics.OpenGL4.PixelFormat.Rgba, PixelType.UnsignedByte, bmpData.Scan0);
                 }
 
                 GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);

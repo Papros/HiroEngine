@@ -51,11 +51,44 @@ namespace HiroEngine
         {
             GUIScene scene = new GUIScene();
 
-            UIElement bar = new UIElement(new Vector2(-0.1f, -0.1f), new Vector2(0.1f, 0.1f));
-            bar.Element = Shape2D.Rectangle(new Vector2(0, 0), new Vector2(0.1f, 0.1f));
-            bar.Element.AddTexture(new Texture[] { new Texture("UI/crosshair.png") });
+            UIElement inv = new UIElement(new Vector3(-0.6f, -0.8f, 0), new Vector2(1f, 1f), UIPositionBehaviour.TOPLEFT);
+            Texture textInv = new Texture("UI/inv.png");
+            inv.Element.AddTexture(textInv);
 
-            scene.UIElements.Add(bar);
+            UIElement item = new UIElement(new Vector3(1,1, 0), new Vector2(1, 1), UIPositionBehaviour.CENTER);
+            Texture textItem = new Texture("UI/diamond.jpg");
+            item.Element.AddTexture(textItem);
+            
+            //scene.UIElements.Add(bar);
+
+            //UIElement inv2 = new UIElement(new Vector3(0, 1, 0), new Vector2(0.6f, 0.8f), UIPositionBehaviour.TOPLEFT);
+            //inv2.Element.AddTexture(textInv);
+
+            //UIElement inv3 = new UIElement(new Vector3(0, 0, 0), new Vector2(0.4f, 0.4f), UIPositionBehaviour.TOPLEFT);
+            //inv3.Element.AddTexture(textInv);
+
+            //UIElement inv4 = new UIElement(new Vector3(-1.0f, -1.0f, 0), new Vector2(0.7f, 0.7f), UIPositionBehaviour.BOTTOMLEFT);
+            //inv4.Element.AddTexture(textInv);
+
+            UIElement inv5 = new UIElement(new Vector3(-1.0f, 1, 0), new Vector2(1, 1), UIPositionBehaviour.CENTER);
+            inv5.Element.AddTexture(textInv);
+
+            item.AddChild(inv5);
+            inv.AddChild(item);
+            /*
+            inv2.AddChild(new UIElement(item));
+            inv3.AddChild(new UIElement(item));
+            inv4.AddChild(new UIElement(item));
+            */
+            
+            scene.UIElements.Add(inv);
+
+            /*
+            scene.UIElements.Add(inv2);
+            scene.UIElements.Add(inv3);
+            scene.UIElements.Add(inv4);
+            */
+            //scene.UIElements.Add(item);
             return scene;
         }
     }
