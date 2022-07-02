@@ -4,8 +4,6 @@ using HiroEngine.HiroEngine.Physics.Basic;
 using HiroEngine.HiroEngine.Physics.Interfaces;
 using OpenTK.Mathematics;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HiroEngine.HiroEngine.Physics.Structures.Colliders
 {

@@ -1,12 +1,9 @@
 ﻿using HiroEngine.HiroEngine.Data.Logger;
 using HiroEngine.HiroEngine.Graphics.Window;
+using HiroEngine.HiroEngine.Inputs;
 using HiroEngine.HiroEngine.Inputs.handlers;
-using HiroEngine.HiroEngine.Inputs.interfaces;
 using HiroEngine.HiroEngine.Inputs.Mouse;
 using HiroEngine.HiroEngine.Physics.Complex;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HiroEngine.HiroEngine.Engine.Elements
 {
@@ -15,14 +12,15 @@ namespace HiroEngine.HiroEngine.Engine.Elements
         readonly string LOGGER_ID = "Engine:Core";
         public Scene Scene { get; set; }
         public GUIScene GUIScene { get; set; }
-        public AppWindow Window { get; private set; }
-
-        public PhysicsEngine Physics { get; private set; }
+        public AppWindow Window { get; set; }
+        public PhysicsEngine Physics { get; set; }
+        public InputManager InputManager => Window?.Input;
 
         public GameEngine()
         {
             Window = new AppWindow(AppWindow.GetGameWindowSettings(), AppWindow.GetWindowSettings());
             Physics = new PhysicsEngine(this);
+            SetupHandlers();
         }
 
         public void Run(int width, int height, string title = "HiroEngine")
@@ -47,11 +45,10 @@ namespace HiroEngine.HiroEngine.Engine.Elements
             Logger.Info(LOGGER_ID, $"Setting up new scene: {scene.Size} objects");
         }
 
-        public void SetupHandlers(IMouseHandler mouseHandler = null, IKeyboardHandler keyboardHandler = null)
+        private void SetupHandlers()
         {
-            Window.Input.MouseHandler = new BasicMouseHandler(this);
-            Window.Input.KeyboardHandler = new BasicKeyboardHandler(Window.Camera);
-            Window.Input.GetSubscribtionFromHandler();
+            Window.Input.PushHandler(new MouseHandler());
+            Window.Input.PushHandler(new KeyboardHandler());
             Logger.Info(LOGGER_ID, "Handlers settup");
         }
     }

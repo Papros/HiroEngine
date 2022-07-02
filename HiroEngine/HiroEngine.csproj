@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <Platforms>AnyCPU;x64</Platforms>
     <FileUpgradeFlags>40</FileUpgradeFlags>
   </PropertyGroup>
@@ -9,6 +9,8 @@
     <Folder Include="HiroEngine\Audio\" />
     <Folder Include="HiroEngine\Data\Structures\" />
     <Folder Include="HiroEngine\Engine\Interfaces\" />
+    <Folder Include="HiroEngine\Engine\Basic\" />
+    <Folder Include="HiroEngine\GUI\Core\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AssimpNet" Version="4.1.0" />

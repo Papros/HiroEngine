@@ -1,6 +1,6 @@
 ﻿namespace HiroEngine.HiroEngine.Inputs.Mouse
 {
-    public enum MouseKeys { 
+    public enum MouseAction { 
         Button1 = 0,
         Left = 0,
         Button2 = 1,
@@ -12,6 +12,8 @@
         Button6 = 5,
         Button7 = 6,
         Button8 = 7,
-        Last = 7
+        Last = 7,
+        Move = 100,
+        Wheel = 101
     }
 }

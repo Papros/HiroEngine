@@ -1,12 +1,11 @@
 ﻿using HiroEngine.HiroEngine.Graphics.Elements;
 using HiroEngine.HiroEngine.Graphics.Shaders;
+using HiroEngine.HiroEngine.Physics.Basic;
 using HiroEngine.HiroEngine.Physics.Complex;
 using HiroEngine.HiroEngine.Physics.Interfaces;
 using HiroEngine.HiroEngine.Physics.Structures.Colliders;
 using OpenTK.Mathematics;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HiroEngine.HiroEngine.Engine.Elements
 {
@@ -15,17 +14,19 @@ namespace HiroEngine.HiroEngine.Engine.Elements
 
         public bool Visible { get; set; }
         public Model ObjectModel { private set; get; }
-        public RigidBody physicsBody { get; set; }
+        public RigidBody PhysicalBody { get; set; }
 
         private Matrix4 modelMatrix = Matrix4.Identity;
         private Matrix4 rotationMatrix = Matrix4.Identity;
         private Matrix4 transformMatrix = Matrix4.Identity;
 
+        public Movement Movement;
+
         public WorldObject(Model model, bool createRigidMesh = false, bool createAABB = false, ICollider collider = null, ICollider aabb = null)
         {
             Visible = true;
             ObjectModel = model;
-            physicsBody = new RigidBody(
+            PhysicalBody = new RigidBody(
                 1.0f, 
                 createRigidMesh ? new BoxCollider().Setup(model) : collider,
                 createAABB ? new BoxCollider().SetupAABB(model) : aabb
@@ -74,11 +75,17 @@ namespace HiroEngine.HiroEngine.Engine.Elements
 
         public void DrawCollider(ShaderProgram shader)
         {
-            if (physicsBody != null)
+            if (PhysicalBody != null)
             {
                 shader.SetMatrix4(ShaderProgram.Uniforms.MATRIX.MODEL, rotationMatrix * modelMatrix);
-                physicsBody.Draw(shader);
+                PhysicalBody.Draw(shader);
             }
+        }
+
+        public void SetMovementVector(Vector3 vector, int force, float mass = 0)
+        {
+            Movement = new Movement(vector, force);
+            if (mass > 0) PhysicalBody.Mass = mass;
         }
     }
 }

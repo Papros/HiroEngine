@@ -1,12 +1,8 @@
-﻿using HiroEngine.HiroEngine.Data.Logger;
-using HiroEngine.HiroEngine.Graphics.Elements;
+﻿using HiroEngine.HiroEngine.Graphics.Elements;
 using HiroEngine.HiroEngine.Graphics.Shaders;
 using HiroEngine.HiroEngine.Physics.Basic;
 using HiroEngine.HiroEngine.Physics.Interfaces;
 using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HiroEngine.HiroEngine.Physics.Complex
 {
@@ -37,7 +33,6 @@ namespace HiroEngine.HiroEngine.Physics.Complex
                 intersectPoint = ray.Position;
                 if(Collider == null)
                 {
-                    Logger.Debug("RigidBody", "AABB & Collider objects null");
                     return false;
                 }
                 return Collider.IsHit(ray, out outDistance, out intersectPoint);

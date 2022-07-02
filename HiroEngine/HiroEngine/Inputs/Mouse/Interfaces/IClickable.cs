@@ -1,4 +1,4 @@
-﻿using HiroEngine.HiroEngine.Graphics.Elements;
+﻿using OpenTK.Mathematics;
 
 namespace HiroEngine.HiroEngine.Inputs.Mouse
 {
@@ -6,6 +6,7 @@ namespace HiroEngine.HiroEngine.Inputs.Mouse
     {
         public void OnClick();
 
-        public IDrawable GetDrawable();
+        public bool Clicked(Vector2 mouse);
+
     }
 }

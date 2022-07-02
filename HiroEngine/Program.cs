@@ -1,9 +1,12 @@
-﻿using HiroEngine.HiroEngine.Engine.Elements;
+﻿using HiroEngine.HiroEngine.Data.Logger;
+using HiroEngine.HiroEngine.Engine.Elements;
 using HiroEngine.HiroEngine.Graphics.Elements;
-using HiroEngine.HiroEngine.Graphics.Window;
 using HiroEngine.HiroEngine.GUI.Elements;
-using HiroEngine.HiroEngine.Inputs.handlers;
+using HiroEngine.HiroEngine.Inputs.Enums;
+using HiroEngine.HiroEngine.Inputs.Keyboard.Struct;
 using HiroEngine.HiroEngine.Inputs.Mouse;
+using HiroEngine.HiroEngine.Inputs.Mouse.Struct;
+using HiroEngine.HiroEngine.Inputs.Shared.Core;
 using HiroEngine.HiroEngine.Physics.Structures.Colliders;
 using OpenTK.Mathematics;
 
@@ -14,13 +17,14 @@ namespace HiroEngine
         static void Main(string[] args)
         {
             GameEngine game = new GameEngine();
-            game.Render(SetupLevel());
-            game.Render(SetupUI());
-            game.SetupHandlers();
+            game.Render(SetupLevel(ref game));
+            game.Window.AppSettings.CursorVisible = true;
+            game.Window.ReloadSettings();
+            game.Render(SetupUI(ref game));
             game.Run(1280, 720);   
         }
 
-        private static Scene SetupLevel()
+        private static Scene SetupLevel(ref GameEngine engine)
         {
             Texture towerText = new Texture("wooden_tower/textures/Wood_Tower_Col.jpg");
             Model tower = new Model("wooden_tower/tower2.dae");
@@ -47,48 +51,191 @@ namespace HiroEngine
             return scene;
         }
 
-        private static GUIScene SetupUI()
+        private static GUIScene SetupUI(ref GameEngine engine)
         {
             GUIScene scene = new GUIScene();
 
-            UIElement inv = new UIElement(new Vector3(-0.6f, -0.8f, 0), new Vector2(1f, 1f), UIPositionBehaviour.TOPLEFT);
+            UIElement inv = new UIElement(new Vector2(-0.5f, -0.5f), new Vector2(1f, 1f), UIPositionBehaviour.CENTER);
             Texture textInv = new Texture("UI/inv.png");
             inv.Element.AddTexture(textInv);
 
-            UIElement item = new UIElement(new Vector3(1,1, 0), new Vector2(1, 1), UIPositionBehaviour.CENTER);
+            UIElement item = new UIElement(new Vector2(1,1), new Vector2(1, 1), UIPositionBehaviour.CENTER);
             Texture textItem = new Texture("UI/diamond.jpg");
             item.Element.AddTexture(textItem);
             
-            //scene.UIElements.Add(bar);
-
-            //UIElement inv2 = new UIElement(new Vector3(0, 1, 0), new Vector2(0.6f, 0.8f), UIPositionBehaviour.TOPLEFT);
-            //inv2.Element.AddTexture(textInv);
-
-            //UIElement inv3 = new UIElement(new Vector3(0, 0, 0), new Vector2(0.4f, 0.4f), UIPositionBehaviour.TOPLEFT);
-            //inv3.Element.AddTexture(textInv);
-
-            //UIElement inv4 = new UIElement(new Vector3(-1.0f, -1.0f, 0), new Vector2(0.7f, 0.7f), UIPositionBehaviour.BOTTOMLEFT);
-            //inv4.Element.AddTexture(textInv);
-
-            UIElement inv5 = new UIElement(new Vector3(-1.0f, 1, 0), new Vector2(1, 1), UIPositionBehaviour.CENTER);
+            UIElement inv5 = new UIElement(new Vector2(-1.0f, 1), new Vector2(1, 1), UIPositionBehaviour.CENTER);
             inv5.Element.AddTexture(textInv);
+
+            Texture crosshair = new Texture("UI/crosshair.png");
+            UIElement cross = new UIElement(new Vector2(0, 0), new Vector2(0.2f, 0.2f), UIPositionBehaviour.CENTER);
+            cross.Element.AddTexture(crosshair);
+
+            Behaviour raycast = new Behaviour((eng, _) =>
+            {
+                var intersection = eng.Physics.Raycast(eng.Window.Camera.GetCameraRay());
+
+                if(intersection != null)
+                {
+                    Shape missle_shape = Shape.Cube(intersection.ShotPosition, new Vector3(0.1f, 0.1f, 0.1f));
+                    WorldObject missle = new WorldObject(
+                        new Model(missle_shape),
+                        false,
+                        true
+                        );
+                    missle.SetMovementVector(eng.Window.Camera.GetCameraRay().Vector.Normalize(), 5);
+
+                    Shape floor = Shape.Cube(intersection.HitPosition, new Vector3(3, 3, 3));
+                    eng.Scene.QueueToAdd.Add(
+                     new WorldObject(new Model(floor),
+                     false,
+                     false
+                     ));
+                    eng.Scene.Update();
+                }
+                
+                Logger.Debug("Behaviour", $"Raycasting! {intersection}");
+            }, engine);
+
+            engine.InputManager.BindAction(MouseAction.Button1, raycast);
+            engine.InputManager.BindAction(MouseAction.Right, raycast);
+
+            const float sensitivity = 0.2f;
+            Behaviour lookingAround = new Behaviour((eng, mouseState) =>
+            {
+                var state = (MouseEventState)mouseState;
+                eng.Window.Camera.Yaw += state.mouseDeltaX * sensitivity;
+                eng.Window.Camera.Pitch -= state.mouseDeltaY * sensitivity;
+            }, engine);
+
+            engine.InputManager.BindAction(MouseAction.Move, lookingAround);
+            engine.InputManager.EnableUIMouseControl(engine);
+
+            const float cameraSpeed = 3.0f;
+            Behaviour goingUp = new Behaviour((eng, keyEvent) =>
+            {
+
+                var state = (KeyEventState)keyEvent;
+                if (state.isDown)
+                {
+                    var camera = eng.Window.Camera;
+                    camera.Position += camera.Up * cameraSpeed * state.timeDelta;
+                }
+            }, engine);
+
+            Behaviour goingDown = new Behaviour((eng, keyEvent) =>
+            {
+                var state = (KeyEventState)keyEvent;
+                if (state.isDown)
+                {
+                    var camera = eng.Window.Camera;
+                    camera.Position -= camera.Up * cameraSpeed * state.timeDelta;
+                }
+            }, engine);
+
+            Behaviour goingForward = new Behaviour((eng, keyEvent) =>
+            {
+                var state = (KeyEventState)keyEvent;
+                if (state.isDown)
+                {
+                    var camera = eng.Window.Camera;
+                    camera.Position += camera.Front * cameraSpeed * state.timeDelta;
+                }
+            }, engine);
+
+            Behaviour goingBackward = new Behaviour((eng, keyEvent) =>
+            {
+                var state = (KeyEventState)keyEvent;
+                if (state.isDown)
+                {
+                    var camera = eng.Window.Camera;
+                    camera.Position -= camera.Front * cameraSpeed * state.timeDelta;
+                }
+            }, engine);
+
+            Behaviour goingLeft = new Behaviour((eng, keyEvent) =>
+            {
+                var state = (KeyEventState)keyEvent;
+                if (state.isDown)
+                {
+                    var camera = eng.Window.Camera;
+                    camera.Position -= camera.Right * cameraSpeed * state.timeDelta;
+                }
+            }, engine);
+
+            Behaviour goingRight = new Behaviour((eng, keyEvent) =>
+            {
+                var state = (KeyEventState)keyEvent;
+                if (state.isDown)
+                {
+                    var camera = eng.Window.Camera;
+                    camera.Position += camera.Right * cameraSpeed * state.timeDelta;
+                }
+            }, engine);
+
+            engine.InputManager.BindAction(KeyboardAction.W, goingForward);
+            engine.InputManager.BindAction(KeyboardAction.A, goingLeft);
+            engine.InputManager.BindAction(KeyboardAction.S, goingBackward);
+            engine.InputManager.BindAction(KeyboardAction.D, goingRight);
+            engine.InputManager.BindAction(KeyboardAction.LeftShift, goingDown);
+            engine.InputManager.BindAction(KeyboardAction.Space, goingUp);
+
+            bool canMove = true;
+
+            void toggleMovement(bool on)
+            {
+                goingForward.SetActive(on);
+                goingBackward.SetActive(on);
+                goingDown.SetActive(on);
+                goingUp.SetActive(on);
+                goingRight.SetActive(on);
+                goingLeft.SetActive(on);
+                lookingAround.SetActive(on);
+                raycast.SetActive(on);
+            }
+
+            Behaviour togleInv = new Behaviour((eng, keyEvent) =>
+            {
+               var state = (KeyEventState)keyEvent;
+
+                if(state.justPressed)
+                {
+                    eng.InputManager.ResetMouseState();
+                    eng.Window.AppSettings.CursorVisible = !inv.IsVisible;
+                    inv.IsVisible = !inv.IsVisible;
+                    eng.Window.ReloadSettings();
+                    cross.IsVisible = !cross.IsVisible;
+                    toggleMovement(!inv.IsVisible);
+                    Logger.Debug("Behaviour", $"Togle inventory!");
+                }
+            }, engine);
+
+            Behaviour togleInvMouse = new Behaviour((eng, _) =>
+            {
+                eng.InputManager.ResetMouseState();
+                eng.Window.AppSettings.CursorVisible = !inv.IsVisible;
+                inv.IsVisible = !inv.IsVisible;
+                eng.Window.ReloadSettings();
+                cross.IsVisible = !cross.IsVisible;
+                toggleMovement(!inv.IsVisible);
+                Logger.Debug("Behaviour", $"Togle inventory!");
+            }, engine);
+
+            engine.InputManager.BindAction(KeyboardAction.Q, togleInv);
+
+            inv5.ClickAction = togleInvMouse;
+            inv5.IsActive = true;
 
             item.AddChild(inv5);
             inv.AddChild(item);
-            /*
-            inv2.AddChild(new UIElement(item));
-            inv3.AddChild(new UIElement(item));
-            inv4.AddChild(new UIElement(item));
-            */
-            
-            scene.UIElements.Add(inv);
 
-            /*
-            scene.UIElements.Add(inv2);
-            scene.UIElements.Add(inv3);
-            scene.UIElements.Add(inv4);
-            */
-            //scene.UIElements.Add(item);
+            inv.IsVisible = false;
+            engine.Window.AppSettings.CursorVisible = false;
+            engine.Window.ReloadSettings();
+            toggleMovement(true);
+
+            scene.UIElements.Add(inv);
+            scene.UIElements.Add(cross);
+
             return scene;
         }
     }

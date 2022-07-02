@@ -2,9 +2,6 @@
 using HiroEngine.HiroEngine.Graphics.Shaders;
 using HiroEngine.HiroEngine.Physics.Basic;
 using HiroEngine.HiroEngine.Physics.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using OpenTK.Graphics.OpenGL4;
 using OpenTK.Mathematics;
 

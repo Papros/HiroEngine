@@ -3,16 +3,13 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Graphics.OpenGL4;
 using HiroEngine.HiroEngine.Graphics.Shaders;
 using System.ComponentModel;
-using HiroEngine.HiroEngine.Graphics.Elements;
 using OpenTK.Mathematics;
 using HiroEngine.HiroEngine.Inputs;
 using HiroEngine.HiroEngine.Graphics.World;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using System.Collections.Generic;
-using HiroEngine.HiroEngine.GUI.Elements;
-using HiroEngine.HiroEngine.Inputs.Mouse;
 using HiroEngine.HiroEngine.Engine.Elements;
-using HiroEngine.HiroEngine.Physics.Structures.Colliders;
+using HiroEngine.HiroEngine.Inputs.Mouse;
+using HiroEngine.HiroEngine.Inputs.Enums;
 
 namespace HiroEngine.HiroEngine.Graphics.Window
 {
@@ -26,10 +23,10 @@ namespace HiroEngine.HiroEngine.Graphics.Window
 
         private double _time;
 
-        public InputManager Input { get; private set; }
-        public Camera Camera { get; private set; }
+        public InputManager Input { get; set; }
+        public Camera Camera { get; set; }
 
-        public AppWindowSettings AppSettings { get; private set; }
+        public AppWindowSettings AppSettings { get; set; }
 
         public static NativeWindowSettings GetWindowSettings(int width = 1280, int height = 720, string title = "HiroEngine")
         {
@@ -58,7 +55,8 @@ namespace HiroEngine.HiroEngine.Graphics.Window
 
         public void ReloadSettings()
         {
-            CursorVisible = true;// AppSettings.CursorVisible;
+            CursorVisible = AppSettings.CursorVisible;
+            CursorGrabbed = !AppSettings.CursorVisible;
         }
 
         protected override void OnLoad()
@@ -70,7 +68,6 @@ namespace HiroEngine.HiroEngine.Graphics.Window
 
             _shaderProgram.Use();
 
-            CursorGrabbed = true;
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f); // Setting "default" background color
             GL.Enable(EnableCap.DepthTest); // Enabling depth test, 
             GL.DepthFunc(DepthFunction.Less);
@@ -144,9 +141,9 @@ namespace HiroEngine.HiroEngine.Graphics.Window
                 }
             }
 
-            Input.SubscribeKeys.ForEach(Key =>
+            Input.SubscribedKeys.ForEach(Key =>
             {
-                Input.OnKeyboardAction(Key, input.IsKeyDown(Key), input.WasKeyDown(Key), (float)e.Time);
+                Input.OnKeyboardAction(Key, input.IsKeyDown((Keys)Key), input.WasKeyDown((Keys)Key), (float)e.Time);
             });
         }
 
@@ -159,19 +156,19 @@ namespace HiroEngine.HiroEngine.Graphics.Window
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
-            Input.OnMouseDown(e);
+            Input.OnMouseDown((MouseAction) e.Button, (InputType) e.Action, (CorespondingKeyEvent)e.Modifiers, e.IsPressed );
         }
 
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
             base.OnMouseMove(e);
-            Input.OnMouseMove(e);
+            Input.OnMouseMove(e.X, e.Y);
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
             base.OnMouseWheel(e);
-            Input.OnMouseWheel(e);
+            Input.OnMouseWheel(e.OffsetY);
         }
     }
 }

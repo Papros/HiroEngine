@@ -1,7 +1,6 @@
 ﻿using Assimp;
 using HiroEngine.HiroEngine.Graphics.Elements;
 using OpenTK.Mathematics;
-using System;
 using System.Collections.Generic;
 
 namespace HiroEngine.HiroEngine.Data.FileDialog
