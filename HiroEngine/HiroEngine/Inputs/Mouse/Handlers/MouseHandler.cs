@@ -14,11 +14,11 @@ namespace HiroEngine.HiroEngine.Inputs.Mouse
         public float MouseX => _lastPosX;
         public float MouseY => _lastPosY;
 
-        internal Dictionary<MouseAction, Behaviour> MouseBindings;
+        internal Dictionary<MouseAction, Behaviour<MouseEventState>> MouseBindings;
 
         public MouseHandler()
         {
-            MouseBindings = new Dictionary<MouseAction, Behaviour>();
+            MouseBindings = new Dictionary<MouseAction, Behaviour<MouseEventState>>();
         }
 
         public void OnMouseDown(MouseAction key, InputType action, CorespondingKeyEvent modifier, bool isPressed)

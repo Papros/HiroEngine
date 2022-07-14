@@ -23,7 +23,7 @@ namespace HiroEngine.HiroEngine.GUI.Elements
         private Vector2 Bounds;
         public UIPositionBehaviour PositionBehaviour { get; set; }
         private Vector3 Offset;
-        public Behaviour ClickAction { get; set;}
+        public Behaviour<object> ClickAction { get; set;}
 
         public UIElement(Vector2 position, Vector2 size, UIPositionBehaviour behaviour, bool active = true, bool visible = true)
         {

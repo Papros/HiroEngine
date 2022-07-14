@@ -9,6 +9,7 @@ using HiroEngine.HiroEngine.Inputs.Mouse.Struct;
 using HiroEngine.HiroEngine.Inputs.Shared.Core;
 using HiroEngine.HiroEngine.Physics.Structures.Colliders;
 using OpenTK.Mathematics;
+using System;
 
 namespace HiroEngine
 {
@@ -70,7 +71,7 @@ namespace HiroEngine
             UIElement cross = new UIElement(new Vector2(0, 0), new Vector2(0.2f, 0.2f), UIPositionBehaviour.CENTER);
             cross.Element.AddTexture(crosshair);
 
-            Behaviour raycast = new Behaviour((eng, _) =>
+            Behaviour<MouseEventState> raycast = new Behaviour<MouseEventState>((eng, _) =>
             {
                 var intersection = eng.Physics.Raycast(eng.Window.Camera.GetCameraRay());
 
@@ -82,7 +83,7 @@ namespace HiroEngine
                         false,
                         true
                         );
-                    missle.SetMovementVector(eng.Window.Camera.GetCameraRay().Vector.Normalize(), 5);
+                    missle.SetMovementVector(eng.Window.Camera.GetCameraRay().Vector, 5);
 
                     Shape floor = Shape.Cube(intersection.HitPosition, new Vector3(3, 3, 3));
                     eng.Scene.QueueToAdd.Add(
@@ -100,9 +101,9 @@ namespace HiroEngine
             engine.InputManager.BindAction(MouseAction.Right, raycast);
 
             const float sensitivity = 0.2f;
-            Behaviour lookingAround = new Behaviour((eng, mouseState) =>
+            Behaviour<MouseEventState> lookingAround = new Behaviour<MouseEventState>((eng, mouseState) =>
             {
-                var state = (MouseEventState)mouseState;
+                var state = mouseState;
                 eng.Window.Camera.Yaw += state.mouseDeltaX * sensitivity;
                 eng.Window.Camera.Pitch -= state.mouseDeltaY * sensitivity;
             }, engine);
@@ -111,10 +112,10 @@ namespace HiroEngine
             engine.InputManager.EnableUIMouseControl(engine);
 
             const float cameraSpeed = 3.0f;
-            Behaviour goingUp = new Behaviour((eng, keyEvent) =>
+            Behaviour<KeyEventState> goingUp = new Behaviour<KeyEventState>((eng, keyEvent) =>
             {
 
-                var state = (KeyEventState)keyEvent;
+                var state = keyEvent;
                 if (state.isDown)
                 {
                     var camera = eng.Window.Camera;
@@ -122,9 +123,9 @@ namespace HiroEngine
                 }
             }, engine);
 
-            Behaviour goingDown = new Behaviour((eng, keyEvent) =>
+            Behaviour<KeyEventState> goingDown = new Behaviour<KeyEventState>((eng, keyEvent) =>
             {
-                var state = (KeyEventState)keyEvent;
+                var state = keyEvent;
                 if (state.isDown)
                 {
                     var camera = eng.Window.Camera;
@@ -132,9 +133,9 @@ namespace HiroEngine
                 }
             }, engine);
 
-            Behaviour goingForward = new Behaviour((eng, keyEvent) =>
+            Behaviour<KeyEventState> goingForward = new Behaviour<KeyEventState>((eng, keyEvent) =>
             {
-                var state = (KeyEventState)keyEvent;
+                var state = keyEvent;
                 if (state.isDown)
                 {
                     var camera = eng.Window.Camera;
@@ -142,9 +143,9 @@ namespace HiroEngine
                 }
             }, engine);
 
-            Behaviour goingBackward = new Behaviour((eng, keyEvent) =>
+            Behaviour<KeyEventState> goingBackward = new Behaviour<KeyEventState>((eng, keyEvent) =>
             {
-                var state = (KeyEventState)keyEvent;
+                var state = keyEvent;
                 if (state.isDown)
                 {
                     var camera = eng.Window.Camera;
@@ -152,9 +153,9 @@ namespace HiroEngine
                 }
             }, engine);
 
-            Behaviour goingLeft = new Behaviour((eng, keyEvent) =>
+            Behaviour<KeyEventState> goingLeft = new Behaviour<KeyEventState>((eng, keyEvent) =>
             {
-                var state = (KeyEventState)keyEvent;
+                var state = keyEvent;
                 if (state.isDown)
                 {
                     var camera = eng.Window.Camera;
@@ -162,9 +163,9 @@ namespace HiroEngine
                 }
             }, engine);
 
-            Behaviour goingRight = new Behaviour((eng, keyEvent) =>
+            Behaviour<KeyEventState> goingRight = new Behaviour<KeyEventState>((eng, keyEvent) =>
             {
-                var state = (KeyEventState)keyEvent;
+                var state = keyEvent;
                 if (state.isDown)
                 {
                     var camera = eng.Window.Camera;
@@ -193,7 +194,7 @@ namespace HiroEngine
                 raycast.SetActive(on);
             }
 
-            Behaviour togleInv = new Behaviour((eng, keyEvent) =>
+            Behaviour<KeyEventState> togleInv = new Behaviour<KeyEventState>((eng, keyEvent) =>
             {
                var state = (KeyEventState)keyEvent;
 
@@ -209,7 +210,7 @@ namespace HiroEngine
                 }
             }, engine);
 
-            Behaviour togleInvMouse = new Behaviour((eng, _) =>
+            Behaviour<object> togleInvMouse = new Behaviour<object>((eng, _) =>
             {
                 eng.InputManager.ResetMouseState();
                 eng.Window.AppSettings.CursorVisible = !inv.IsVisible;

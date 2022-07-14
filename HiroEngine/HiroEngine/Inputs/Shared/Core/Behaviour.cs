@@ -3,20 +3,20 @@ using System;
 
 namespace HiroEngine.HiroEngine.Inputs.Shared.Core
 {
-    public class Behaviour
+    public class Behaviour<T>
     {
         public GameEngine Target { get; private set; }
-        public Action<GameEngine, object> Action { get; set; }
+        public Action<GameEngine, T> Action { get; set; }
         private bool Active;  
 
-        public Behaviour(Action<GameEngine, object> callback, GameEngine target = null)
+        public Behaviour(Action<GameEngine, T> callback, GameEngine target = null)
         {
             Action = callback;
             Target = target;
             Active = true;
         }
 
-        public void Run(object additional = null)
+        public void Run(T additional = default)
         {
             if(Active) Action.Invoke(Target, additional);
         }

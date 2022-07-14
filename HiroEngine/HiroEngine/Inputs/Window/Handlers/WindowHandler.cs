@@ -6,10 +6,10 @@ namespace HiroEngine.HiroEngine.Inputs.Window.Handlers
 {
     public class WindowHandler
     {
-        public Dictionary<WindowAction, Behaviour> WindowBindings { get; private set; }
+        public Dictionary<WindowAction, Behaviour<WindowAction>> WindowBindings { get; private set; }
         public WindowHandler()
         {
-            WindowBindings = new Dictionary<WindowAction, Behaviour>();
+            WindowBindings = new Dictionary<WindowAction, Behaviour<WindowAction>>();
         }
 
         public void OnWindowAction(WindowAction key)

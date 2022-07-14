@@ -10,11 +10,11 @@ namespace HiroEngine.HiroEngine.Inputs.handlers
     public class KeyboardHandler
     {
         private readonly string loggerPrefix = "KeyboardHandler";
-        public Dictionary<KeyboardAction, Behaviour>  KeyBindings {get; private set;}
+        public Dictionary<KeyboardAction, Behaviour<KeyEventState>>  KeyBindings {get; private set;}
         public List<KeyboardAction> BindedKeys { get; private set; }
         public KeyboardHandler()
         {
-            KeyBindings = new Dictionary<KeyboardAction, Behaviour>(); 
+            KeyBindings = new Dictionary<KeyboardAction, Behaviour<KeyEventState>>(); 
             BindedKeys = new List<KeyboardAction>();
         }
 

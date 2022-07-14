@@ -2,6 +2,7 @@
 using HiroEngine.HiroEngine.Engine.Elements;
 using HiroEngine.HiroEngine.Inputs.Enums;
 using HiroEngine.HiroEngine.Inputs.handlers;
+using HiroEngine.HiroEngine.Inputs.Keyboard.Struct;
 using HiroEngine.HiroEngine.Inputs.Mouse;
 using HiroEngine.HiroEngine.Inputs.Mouse.Struct;
 using HiroEngine.HiroEngine.Inputs.Shared.Core;
@@ -23,7 +24,7 @@ namespace HiroEngine.HiroEngine.Inputs
         public float MouseY => MouseHandler?.MouseY ?? 0;
         public List<KeyboardAction> SubscribedKeys => KeyboardHandler?.BindedKeys;
 
-        private Behaviour MouseUIControl;
+        private Behaviour<MouseEventState> MouseUIControl;
 
         public InputManager()
         {
@@ -83,7 +84,7 @@ namespace HiroEngine.HiroEngine.Inputs
             }
         }
 
-        public void BindAction(MouseAction action, Behaviour mouseBehaviour)
+        public void BindAction(MouseAction action, Behaviour<MouseEventState> mouseBehaviour)
         {
             if(MouseHandler != null && mouseBehaviour != null)
             {
@@ -102,7 +103,7 @@ namespace HiroEngine.HiroEngine.Inputs
             }
         }
 
-        public void BindAction(KeyboardAction action, Behaviour keyBehaviour)
+        public void BindAction(KeyboardAction action, Behaviour<KeyEventState> keyBehaviour)
         {
             Logger.Info("", $"Binding actions to key: {action}");
             if (KeyboardHandler != null && keyBehaviour != null)
@@ -125,7 +126,7 @@ namespace HiroEngine.HiroEngine.Inputs
             }
         }
 
-        public void BindAction(WindowAction action, Behaviour windowBehaviour)
+        public void BindAction(WindowAction action, Behaviour<WindowAction> windowBehaviour)
         {
             if (WindowHandler != null && windowBehaviour != null)
             {
@@ -162,7 +163,7 @@ namespace HiroEngine.HiroEngine.Inputs
 
         public void EnableUIMouseControl(GameEngine engine)
         {
-            MouseUIControl = new Behaviour((eng, mouseState) =>
+            MouseUIControl = new Behaviour<MouseEventState>((eng, mouseState) =>
             {
                 var state = (MouseEventState)mouseState;
                 var halfX = eng.Window.Size.X * 0.5f;

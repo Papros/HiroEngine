@@ -82,7 +82,7 @@ namespace HiroEngine.HiroEngine.Graphics.World
 
         public Ray GetCameraRay()
         {
-            return new Ray(this.Front, this.Position);
+            return new Ray(this.Front.Normalized(), this.Position);
         }
     }
 }
