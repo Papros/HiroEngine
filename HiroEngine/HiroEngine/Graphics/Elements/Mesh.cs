@@ -6,9 +6,9 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
 {
     public class Mesh : IDrawable
     {
-        public float[] Vertices { get; private set; }
+        public float[] Vertices { get; protected set; }
         private int[] _indices;
-        private Texture[] _textures;
+        public Texture[] Textures { get; private set; }
         public Vector3 axisMin { get; private set; }
         public Vector3 axisMax { get; private set; }
 
@@ -20,7 +20,7 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
         {
             Vertices = vertices;
             _indices = indices;
-            _textures = textures != null ? textures : new Texture[] { };
+            Textures = textures != null ? textures : new Texture[] { };
             axisMax = max;
             axisMin = min;
             Setup();
@@ -31,9 +31,9 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
             shaderProgram.Use();
             GL.BindVertexArray(VAO);
 
-            for (int i = 0; i < _textures.Length; i++)
+            for (int i = 0; i < Textures.Length; i++)
             {
-                _textures[i].UseUnit(i);
+                Textures[i].UseUnit(i);
             }
 
             GL.DrawElements(PrimitiveType.Triangles, _indices.Length, DrawElementsType.UnsignedInt, 0);
@@ -43,7 +43,7 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
             GL.ActiveTexture(TextureUnit.Texture0);
         }
 
-        private void Setup()
+        protected void Setup()
         {
             VAO = GL.GenVertexArray();
             VBO = GL.GenBuffer();
@@ -73,12 +73,17 @@ namespace HiroEngine.HiroEngine.Graphics.Elements
 
         public void AddTexture(Texture[] textures)
         {
-            _textures = textures;
+            Textures = textures;
+        }
+
+        public void AddTexture(Texture texture)
+        {
+            Textures = new Texture[] { texture };
         }
 
         public void ReplaceTextures(Texture[] textures)
         {
-            _textures = textures;
+            Textures = textures;
         }
 
         public static Mesh TestData()

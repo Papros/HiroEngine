@@ -1,8 +1,6 @@
 ﻿using HiroEngine.HiroEngine.Graphics.Elements;
 using HiroEngine.HiroEngine.Graphics.Shaders;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace HiroEngine.HiroEngine.Engine.Elements
 {

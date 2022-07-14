@@ -1,6 +1,6 @@
 ﻿namespace HiroEngine.HiroEngine.Graphics.Window
 {
-    public struct AppWindowSettings
+    public class AppWindowSettings
     {
         public bool CursorVisible { get; set; }
         public bool LeaveByEscape { get; set; }
@@ -11,7 +11,7 @@
         {
             return new AppWindowSettings
             {
-                CursorVisible = false,
+                CursorVisible = true,
                 LeaveByEscape = true,
                 ShowCursorByEscape = true,
                 Debug = false

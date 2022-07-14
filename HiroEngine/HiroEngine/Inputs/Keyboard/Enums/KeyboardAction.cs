@@ -1,6 +1,6 @@
 ﻿namespace HiroEngine.HiroEngine.Inputs.Enums
 {
-    public enum KeyboardKeys
+    public enum KeyboardAction
     {
         Unknown = -1,
         Space = 32,

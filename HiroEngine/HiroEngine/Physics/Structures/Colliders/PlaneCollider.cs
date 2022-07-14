@@ -1,5 +1,4 @@
-﻿using HiroEngine.HiroEngine.Data.Logger;
-using HiroEngine.HiroEngine.Graphics.Elements;
+﻿using HiroEngine.HiroEngine.Graphics.Elements;
 using HiroEngine.HiroEngine.Graphics.Shaders;
 using HiroEngine.HiroEngine.Physics.Basic;
 using HiroEngine.HiroEngine.Physics.Interfaces;
@@ -83,18 +82,12 @@ namespace HiroEngine.HiroEngine.Physics.Structures.Colliders
 
         public bool IsHit(Ray ray, out float outDistance, out Vector3 intersectPoint)
         {
-            Logger.Debug(LoggerID, $"IsHit: plane:{planeNormal.ToString()} : {distanceFromStart}  p: { ray.Position.ToString() }, r: { ray.Vector.ToString() }");
             float denom = Vector3.Dot(planeNormal, ray.Vector);
-            Logger.Info(LoggerID, $"denom: {denom} => {denom > 1e-4f}");
             if(Math.Abs(denom) > 1e-4f)
             {
                 var helper = planeNormal*distanceFromStart - ray.Position;
-                Logger.Info(LoggerID, $"helper: {helper}");
                 outDistance = -(Vector3.Dot(planeNormal, ray.Position) + distanceFromStart) / denom;
-                Logger.Info(LoggerID, $"outDistance: {outDistance}");
                 intersectPoint = ray.Position + ray.Vector * outDistance;
-                Logger.Info(LoggerID, $"intersectPoint: {intersectPoint}, dot: {Vector3.Dot(helper, planeNormal)}");
-                Logger.Info(LoggerID, $"Dot: {Vector3.Dot(helper, planeNormal) / denom}");
                 return Vector3.Dot(helper, planeNormal) / denom >= 0;
             } else
             {

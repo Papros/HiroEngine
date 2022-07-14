@@ -3,16 +3,13 @@ using OpenTK.Windowing.Desktop;
 using OpenTK.Graphics.OpenGL4;
 using HiroEngine.HiroEngine.Graphics.Shaders;
 using System.ComponentModel;
-using HiroEngine.HiroEngine.Graphics.Elements;
 using OpenTK.Mathematics;
 using HiroEngine.HiroEngine.Inputs;
 using HiroEngine.HiroEngine.Graphics.World;
 using OpenTK.Windowing.GraphicsLibraryFramework;
-using System.Collections.Generic;
-using HiroEngine.HiroEngine.GUI.Elements;
-using HiroEngine.HiroEngine.Inputs.Mouse;
 using HiroEngine.HiroEngine.Engine.Elements;
-using HiroEngine.HiroEngine.Physics.Structures.Colliders;
+using HiroEngine.HiroEngine.Inputs.Mouse;
+using HiroEngine.HiroEngine.Inputs.Enums;
 
 namespace HiroEngine.HiroEngine.Graphics.Window
 {
@@ -26,10 +23,10 @@ namespace HiroEngine.HiroEngine.Graphics.Window
 
         private double _time;
 
-        public InputManager Input { get; private set; }
-        public Camera Camera { get; private set; }
+        public InputManager Input { get; set; }
+        public Camera Camera { get; set; }
 
-        public AppWindowSettings AppSettings { get; private set; }
+        public AppWindowSettings AppSettings { get; set; }
 
         public static NativeWindowSettings GetWindowSettings(int width = 1280, int height = 720, string title = "HiroEngine")
         {
@@ -58,7 +55,8 @@ namespace HiroEngine.HiroEngine.Graphics.Window
 
         public void ReloadSettings()
         {
-            CursorVisible = true;// AppSettings.CursorVisible;
+            CursorVisible = AppSettings.CursorVisible;
+            CursorGrabbed = !AppSettings.CursorVisible;
         }
 
         protected override void OnLoad()
@@ -70,59 +68,12 @@ namespace HiroEngine.HiroEngine.Graphics.Window
 
             _shaderProgram.Use();
 
-            CursorGrabbed = true;// false;// true;
             GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f); // Setting "default" background color
             GL.Enable(EnableCap.DepthTest); // Enabling depth test, 
-            GL.Enable(EnableCap.ClipDistance1); // Enabling depth test, 
-            // MODELS
-            /*
-            Texture towerText = new Texture("wooden_tower/textures/Wood_Tower_Col.jpg");
-
-            Model tower = new Model("wooden_tower/tower2.dae");
-            tower.Components[0].AddTexture(new Texture[] { towerText });
-            WorldObject towerO1 = new WorldObject(tower, true);
-            towerO1.AddPosition(0, 0, 0);
-            towerO1.AddRotation(-1.5708f, 0, 0);
-            towerO1.AddTransform(0.7f);
-
-            Model tower2 = new Model("wooden_tower/tower2.dae");
-            tower2.Components[0].AddTexture(new Texture[] { towerText });
-            WorldObject towerO2 = new WorldObject(tower2, true);
-            towerO2.AddPosition(-10, 0, 0);
-            towerO2.AddRotation(-1.5708f, -0.9f, 0);
-            towerO2.AddTransform(1.2f);
-
-            Model tower3 = new Model("wooden_tower/tower2.dae");
-            tower3.Components[0].AddTexture(new Texture[] { towerText });
-            WorldObject towerO3 = new WorldObject(tower3, true);
-            towerO3.AddPosition(10, 0, 0);
-            towerO3.AddRotation(-1.5708f, 0.5f, 0);
-            towerO3.AddTransform(1.9f);
-
-            scene.worldObjects.Add(towerO1);
-            scene.worldObjects.Add(towerO2);
-            scene.worldObjects.Add(towerO3);
-
-            GL.ClearColor(0.2f, 0.3f, 0.3f, 1.0f); // Setting "default" background color
-            GL.Enable(EnableCap.DepthTest); // Enabling depth test, 
-            // GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line); To draw only edges
-
-
-            Shape floor = Shape.Plane(new Vector3(-15, 0, -5), new Vector2(30, 10));
-            floor.AddTexture(new Texture[] { new Texture("container.png") });
-            scene.worldObjects.Add(new WorldObject(new Model(floor), false));
-            */
-            /*
-            UIElement minimap = new UIElement(new Vector2(-0.98f, 0.48f), new Vector2(1, 1));
-            minimap.Element = Shape2D.Rectangle(new Vector2(0, 0), new Vector2(0.5f, 0.5f));
-            minimap.Element.AddTexture(new Texture[] { new Texture("UI/minimap.png") });
-            _guiList.Add(minimap);
-
-            UIElement bar = new UIElement(new Vector2(-0.3f, -0.98f), new Vector2(0.6f, 0.2f));
-            bar.Element = Shape2D.Rectangle(new Vector2(0, 0), new Vector2(0.6f, 0.2f));
-            bar.Element.AddTexture(new Texture[] { new Texture("UI/bar.png") });
-            _guiList.Add(bar);
-            */
+            GL.DepthFunc(DepthFunction.Less);
+            GL.Enable(EnableCap.ClipDistance1);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             _shaderProgram.SetMatrix4(ShaderProgram.Uniforms.MATRIX.PROJECTION, Camera.GetProjectionMatrix());
 
@@ -164,7 +115,6 @@ namespace HiroEngine.HiroEngine.Graphics.Window
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill); // To draw only edges
                 _shaderProgram.SetFlag(ShaderProgram.Uniforms.SETTINGS.DEBUG, false);
             }
-
             _guiShaderProgram.Use();
             GUIScene.Draw(_guiShaderProgram);
 
@@ -191,9 +141,9 @@ namespace HiroEngine.HiroEngine.Graphics.Window
                 }
             }
 
-            Input.SubscribeKeys.ForEach(Key =>
+            Input.SubscribedKeys.ForEach(Key =>
             {
-                Input.OnKeyboardAction(Key, input.IsKeyDown(Key), input.WasKeyDown(Key), (float)e.Time);
+                Input.OnKeyboardAction(Key, input.IsKeyDown((Keys)Key), input.WasKeyDown((Keys)Key), (float)e.Time);
             });
         }
 
@@ -206,19 +156,19 @@ namespace HiroEngine.HiroEngine.Graphics.Window
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
-            Input.OnMouseDown(e);
+            Input.OnMouseDown((MouseAction) e.Button, (InputType) e.Action, (CorespondingKeyEvent)e.Modifiers, e.IsPressed );
         }
 
         protected override void OnMouseMove(MouseMoveEventArgs e)
         {
             base.OnMouseMove(e);
-            Input.OnMouseMove(e);
+            Input.OnMouseMove(e.X, e.Y);
         }
 
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
             base.OnMouseWheel(e);
-            Input.OnMouseWheel(e);
+            Input.OnMouseWheel(e.OffsetY);
         }
     }
 }

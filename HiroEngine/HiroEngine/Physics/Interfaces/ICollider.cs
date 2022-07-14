@@ -1,10 +1,6 @@
 ﻿using HiroEngine.HiroEngine.Graphics.Elements;
-using HiroEngine.HiroEngine.Graphics.Shaders;
 using HiroEngine.HiroEngine.Physics.Basic;
 using OpenTK.Mathematics;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HiroEngine.HiroEngine.Physics.Interfaces
 {
